@@ -1,0 +1,28 @@
+server:
+  port: 7210
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/food_delivery
+    username: postgres
+    password: root123
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.format_sql: true
+
+
+telegram:
+  bot:
+    username: t.me/food_delivery_angren_bot
+    token: 8499626969:AAGHMtUo3DtjO87qo4CIURF6COYb1ButLew
+    webhookPath: https://0d3144c067a8.ngrok-free.app
+    botPath: webhook
+    allowed-updates:
+      - message
+      - edited_message
+      - my_chat_member
+      - chat_member
+      - callback_query
