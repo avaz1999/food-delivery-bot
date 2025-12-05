@@ -6,14 +6,13 @@ import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.service.base.StateService;
 import food.delivery.bot.service.message.ClientMessageService;
-import food.delivery.bot.utils.BotMessageHelper;
 import food.delivery.bot.utils.BotMessages;
-import food.delivery.bot.utils.ResponseCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,9 +28,9 @@ public class ClientMessageServiceImpl implements ClientMessageService {
 
 
     @Override
-    public BotApiMethod<?> handleClientState(Message message, BotUserDTO botUser) {
+    public List<BotApiMethod<?>> handleClientState(Message message, BotUserDTO botUser) {
         String text = message.getText();
-        BotApiMethod<?> result = handleStartMessage(botUser, text);
+        List<BotApiMethod<?>> result = handleStartMessage(botUser, text);
         if (result != null) return result;
         return switch (botUser.getState()) {
             case STATE_START -> stateService.handleStartMessage(botUser, text);
@@ -41,13 +40,17 @@ public class ClientMessageServiceImpl implements ClientMessageService {
         };
     }
 
-    private BotApiMethod<?> handleStartMessage(BotUserDTO botUser, String text) {
+    private List<BotApiMethod<?>> handleStartMessage(BotUserDTO botUser, String text) {
         if (botUser.getState().equals(State.STATE_START)
                 && Objects.equals(text, "/start")) {
-            return baseService.sendText(botUser.getChatId(),
+            return List.of(baseService.sendText(botUser.getChatId(),
                     BotMessages.BOT_START1.getMessage(botUser.getLanguage()) +
                             botUser.getFullName() + BotMessages.BOT_START2.getMessage(botUser.getLanguage())
-                    , null);
+                    , null),
+                    baseService.sendText(botUser.getChatId(),
+                            BotMessages.BOT_START1.getMessage(botUser.getLanguage()) +
+                                    botUser.getFullName() + BotMessages.BOT_START2.getMessage(botUser.getLanguage())
+                            , null));
         }
         return null;
     }

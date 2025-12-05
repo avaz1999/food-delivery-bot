@@ -30,8 +30,8 @@ public class BotController {
     public ResponseEntity<String> handle(Update update) {
         List<BotApiMethod<?>> methodsToSend = new ArrayList<>();
         if (update.hasMessage()) {
-            BotApiMethod<?> m = messageService.messageHandler(update.getMessage());
-            if (m != null) methodsToSend.add(m);
+            List<BotApiMethod<?>> res = messageService.messageHandler(update.getMessage());
+            methodsToSend.addAll(res);
         } else if (update.hasCallbackQuery()) {
             BotApiMethod<?> c = callbackQueryService.callbackHandler(update.getCallbackQuery());
             if (c != null) methodsToSend.add(c);

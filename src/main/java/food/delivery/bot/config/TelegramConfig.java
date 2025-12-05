@@ -21,10 +21,6 @@ public class TelegramConfig {
     private final BotProperties props;
     private final BotController handler;
 
-    @Bean
-    public OkHttpTelegramClient telegramClient() {
-        return new OkHttpTelegramClient(props.token());
-    }
 
     @Bean
     public SpringTelegramWebhookBot webhookBot(OkHttpTelegramClient client) {

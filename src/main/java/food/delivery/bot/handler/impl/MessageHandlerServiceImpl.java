@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
+import java.util.List;
+
 /**
  * Created by Avaz Absamatov
  * Date: 11/30/2025
@@ -28,7 +30,7 @@ public class MessageHandlerServiceImpl implements MessageHandlerService {
     private final BaseService baseService;
 
     @Override
-    public BotApiMethod<?> messageHandler(Message message) {
+    public List<BotApiMethod<?>> messageHandler(Message message) {
         try {
             BotUserDTO botUser = botUserService.getOrRegisterUser(message);
             return switch (botUser.getRole()) {
@@ -41,7 +43,7 @@ public class MessageHandlerServiceImpl implements MessageHandlerService {
         } catch (Exception e) {
             log.error("Message handling error", e);
             Long chatId = message.getChatId();
-            return baseService.sendText(chatId, "Service temporary error", null);
+            return List.of(baseService.sendText(chatId, "Service temporary error", null));
         }
 
     }

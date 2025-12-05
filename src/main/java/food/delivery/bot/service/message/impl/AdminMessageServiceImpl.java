@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
+import java.util.List;
+
 /**
  * Created by Avaz Absamatov
  * Date: 12/2/2025
@@ -12,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.message.Message;
 @Service
 public class AdminMessageServiceImpl implements AdminMessageService {
     @Override
-    public BotApiMethod<?> handleAdminState(Message message) {
+    public List<BotApiMethod<?>> handleAdminState(Message message) {
         return null;
     }
 }
