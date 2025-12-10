@@ -1,8 +1,8 @@
-package food.delivery.bot.handler.impl;
+package food.delivery.bot.service.handler.impl;
 
 import food.delivery.backend.dto.request.BotUserDTO;
 import food.delivery.backend.service.BotUserService;
-import food.delivery.bot.handler.MessageHandlerService;
+import food.delivery.bot.service.handler.MessageHandlerService;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.message.*;
 import lombok.RequiredArgsConstructor;

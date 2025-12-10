@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 12/2/2025
  */
 public interface BotUserRepository extends JpaRepository<BotUser, Long> {
-    BotUser findByUserId(Long userId);
+    BotUser findByChatId(Long chatId);
 }

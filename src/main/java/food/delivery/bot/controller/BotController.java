@@ -1,7 +1,7 @@
 package food.delivery.bot.controller;
 
-import food.delivery.bot.handler.CallbackQueryService;
-import food.delivery.bot.handler.MessageHandlerService;
+import food.delivery.bot.service.handler.CallbackQueryService;
+import food.delivery.bot.service.handler.MessageHandlerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +33,8 @@ public class BotController {
             List<BotApiMethod<?>> res = messageService.messageHandler(update.getMessage());
             methodsToSend.addAll(res);
         } else if (update.hasCallbackQuery()) {
-            BotApiMethod<?> c = callbackQueryService.callbackHandler(update.getCallbackQuery());
-            if (c != null) methodsToSend.add(c);
+            List<BotApiMethod<?>> c = callbackQueryService.callbackHandler(update.getCallbackQuery());
+            if (c != null) methodsToSend.addAll(c);
         }
         for (BotApiMethod<?> method : methodsToSend) {
             try {

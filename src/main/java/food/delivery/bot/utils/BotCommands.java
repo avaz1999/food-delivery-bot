@@ -11,11 +11,18 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum BotCommands {
+    MAIN_MENU("Asosiy menu ⬅️","Главное меню ⬅️"),
     MENU_START_ORDER("Buyurtma berish \uD83D\uDED2", "Заказ \uD83D\uDED2"),
     MENU_ABOUT_US("Biz haqimizda ℹ️", "О нас ℹ️"),
     MENU_MY_ORDER("Mening buyurtmalarim \uD83D\uDECD", "Мои заказы \uD83D\uDECD"),
     MENU_COMMENT("Fikr bildirish ✍️", "Комментарий ✍️"),
-    MENU_SETTINGS("Sozlamalar ⚙️", "Настройки ⚙️");
+
+    MENU_SETTINGS("Sozlamalar ⚙️", "Настройки ⚙️"),
+    SETTINGS_MENU_CHANGE_LANG("Til","Язык"),
+    SETTINGS_MENU_CHANGE_ADDRESS("Manzil","Адрес"),
+    SETTINGS_MENU_CHANGE_PHONE("Telefon","Телефон"),
+
+    BACK("ORTGA ⬅️", "НАЗАД ⬅️");
     private final String uz;
     private final String ru;
 

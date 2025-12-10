@@ -16,11 +16,14 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class BotUserDTO {
+    private Long id;
     private String fullName;
     private Long chatId;
     private Long userId;
     private Language language;
     private State state;
     private Status status;
+    private String phone;
+    private String address;
     private Role role;
 }

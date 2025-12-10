@@ -1,4 +1,4 @@
-package food.delivery.bot.handler;
+package food.delivery.bot.service.handler;
 
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;

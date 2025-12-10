@@ -1,7 +1,9 @@
-package food.delivery.bot.handler;
+package food.delivery.bot.service.handler;
 
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+
+import java.util.List;
 
 /**
  * Created by Avaz Absamatov
@@ -9,5 +11,5 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
  */
 
 public interface CallbackQueryService {
-    BotApiMethod<?> callbackHandler(CallbackQuery callbackQuery);
+    List<BotApiMethod<?>> callbackHandler(CallbackQuery callbackQuery);
 }

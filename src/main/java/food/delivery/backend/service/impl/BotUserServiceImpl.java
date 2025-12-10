@@ -24,9 +24,23 @@ public class BotUserServiceImpl implements BotUserService {
 
     @Override
     public BotUserDTO getOrRegisterUser(Message message) {
-        BotUser botUser = repository.findByUserId(message.getFrom().getId());
+        BotUser botUser = repository.findByChatId(message.getChatId());
         if (botUser == null) return buildBotUser(message);
         return buildBotUserDTO(botUser);
+    }
+
+    @Override
+    public void changeState(BotUserDTO botUserDTO, State state) {
+        BotUser botUser = repository.findByChatId(botUserDTO.getUserId());
+        botUser.setState(state);
+        repository.save(botUser);
+    }
+
+    @Override
+    public Language saveLanguage(BotUserDTO botUserDTO, Language language) {
+        BotUser botUser = repository.findByChatId(botUserDTO.getUserId());
+        botUser.setLanguage(language);
+        return repository.save(botUser).getLanguage();
     }
 
     private BotUserDTO buildBotUser(Message message) {
@@ -51,6 +65,7 @@ public class BotUserServiceImpl implements BotUserService {
 
     private BotUserDTO buildBotUserDTO(BotUser savedEntity) {
         return BotUserDTO.builder()
+                .id(savedEntity.getId())
                 .fullName(savedEntity.getFullName())
                 .chatId(savedEntity.getChatId())
                 .userId(savedEntity.getUserId())
@@ -58,6 +73,8 @@ public class BotUserServiceImpl implements BotUserService {
                 .state(savedEntity.getState())
                 .status(savedEntity.getStatus())
                 .role(savedEntity.getRole())
+                .phone(savedEntity.getPhone())
+                .address(savedEntity.getAddress())
                 .build();
     }
 }
