@@ -1,6 +1,6 @@
 package food.delivery.bot.service.base.impl;
 
-import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.State;
 import food.delivery.backend.service.BotUserService;
 import food.delivery.bot.service.base.BaseService;
@@ -9,12 +9,13 @@ import food.delivery.bot.service.base.ReplyMarkupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
 
-import static food.delivery.bot.utils.BotMessages.ADD_ORDER;
-import static food.delivery.bot.utils.BotMessages.CHOOSE_LANGUAGE;
+import static food.delivery.bot.utils.BotMessages.*;
 
 /**
  * Created by Avaz Absamatov
@@ -28,28 +29,28 @@ public class MenuServiceImpl implements MenuService {
     private final BotUserService botUserService;
 
     @Override
-    public List<BotApiMethod<?>> addOrder(BotUserDTO botUserDTO, String data) {
+    public List<BotApiMethod<?>> addOrder(BotUser botUserDTO, String data) {
         return List.of();
     }
 
     @Override
-    public List<BotApiMethod<?>> aboutUs(BotUserDTO botUserDTO, String data) {
+    public List<BotApiMethod<?>> aboutUs(BotUser botUserDTO, String data) {
         return List.of();
     }
 
     @Override
-    public List<BotApiMethod<?>> myOrders(BotUserDTO botUserDTO, String data) {
+    public List<BotApiMethod<?>> myOrders(BotUser botUserDTO, String data) {
         return List.of();
     }
 
     @Override
-    public List<BotApiMethod<?>> comment(BotUserDTO botUserDTO, String data) {
+    public List<BotApiMethod<?>> comment(BotUser botUserDTO, String data) {
         return List.of();
     }
 
     //-------------------SETTING--------------------------
     @Override
-    public List<BotApiMethod<?>> setting(BotUserDTO botUserDTO, CallbackQuery callbackQuery) {
+    public List<BotApiMethod<?>> setting(BotUser botUserDTO, CallbackQuery callbackQuery) {
         Integer messageId = callbackQuery.getMessage().getMessageId();
         BotApiMethod<?> editMessage = baseService.
                 processSettingLanguage(botUserDTO, messageId, baseService, replyMarkupService);
@@ -60,7 +61,7 @@ public class MenuServiceImpl implements MenuService {
 
 
     @Override
-    public List<BotApiMethod<?>> settingChangeLangMenu(BotUserDTO botUser, CallbackQuery callbackQuery) {
+    public List<BotApiMethod<?>> settingChangeLangMenu(BotUser botUser, CallbackQuery callbackQuery) {
         String changeLangMessage = CHOOSE_LANGUAGE.getMessage(botUser.getLanguage());
         Integer messageId = callbackQuery.getMessage().getMessageId();
         botUserService.changeState(botUser, State.STATE_SETTING_CHOOSE_LANG);
@@ -69,17 +70,22 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<BotApiMethod<?>> settingChangeAddressMenu(BotUserDTO botUser, CallbackQuery callbackQuery) {
+    public List<BotApiMethod<?>> settingChangeAddressMenu(BotUser botUser, CallbackQuery callbackQuery) {
         return List.of();
     }
 
     @Override
-    public List<BotApiMethod<?>> settingChangePhoneMenu(BotUserDTO botUser, CallbackQuery callbackQuery) {
-        return List.of();
+    public List<BotApiMethod<?>> settingChangePhoneMenu(BotUser botUser, CallbackQuery callbackQuery) {
+        String addPhone = BOT_SHARE_PHONE_NUMBER.getMessage(botUser.getLanguage());
+        Integer messageId = callbackQuery.getMessage().getMessageId();
+        DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
+        SendMessage sendMessage = baseService.sendText(botUser.getChatId(), addPhone, replyMarkupService.sharePhone(botUser));
+        botUserService.changeState(botUser, State.STATE_SETTING_PHONE_NUMBER);
+        return List.of(deleteMessage, sendMessage);
     }
 
     @Override
-    public List<BotApiMethod<?>> mainMenu(BotUserDTO botUser, CallbackQuery callbackQuery) {
+    public List<BotApiMethod<?>> mainMenu(BotUser botUser, CallbackQuery callbackQuery) {
         String addOrder = ADD_ORDER.getMessage(botUser.getLanguage());
         Integer messageId = callbackQuery.getMessage().getMessageId();
         botUserService.changeState(botUser, State.STATE_MAIN_MENU);

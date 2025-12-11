@@ -1,6 +1,7 @@
 package food.delivery.bot.service.handler.impl;
 
 import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.service.BotUserService;
 import food.delivery.bot.service.handler.MessageHandlerService;
 import food.delivery.bot.service.base.BaseService;
@@ -12,6 +13,8 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 import java.util.List;
+
+import static food.delivery.backend.enums.Role.CLIENT;
 
 /**
  * Created by Avaz Absamatov
@@ -32,7 +35,7 @@ public class MessageHandlerServiceImpl implements MessageHandlerService {
     @Override
     public List<BotApiMethod<?>> messageHandler(Message message) {
         try {
-            BotUserDTO botUser = botUserService.getOrRegisterUser(message);
+            BotUser botUser = botUserService.getOrRegisterUser(message);
             return switch (botUser.getRole()) {
                 case CLIENT -> clientMessageService.handleClientState(message, botUser);
                 case ADMIN -> adminMessageService.handleAdminState(message);

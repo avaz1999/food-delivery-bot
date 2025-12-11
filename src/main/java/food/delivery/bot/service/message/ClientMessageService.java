@@ -1,6 +1,6 @@
 package food.delivery.bot.service.message;
 
-import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
@@ -11,5 +11,5 @@ import java.util.List;
  * Date: 12/2/2025
  */
 public interface ClientMessageService {
-    List<BotApiMethod<?>> handleClientState(Message message, BotUserDTO botUser);
+    List<BotApiMethod<?>> handleClientState(Message message, BotUser botUser);
 }

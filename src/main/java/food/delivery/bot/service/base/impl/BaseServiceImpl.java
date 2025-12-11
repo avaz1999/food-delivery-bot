@@ -1,18 +1,16 @@
 package food.delivery.bot.service.base.impl;
 
-import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.utils.BotMessages;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
@@ -33,7 +31,7 @@ public class BaseServiceImpl implements BaseService {
     @Override
     public SendMessage sendText(Long chatId, String text, ReplyKeyboard replyKeyboard) {
         SendMessage sendMessage = SendMessage.builder()
-                .parseMode(ParseMode.MARKDOWN)
+                .parseMode("HTML")
                 .chatId(chatId.toString())
                 .text(text)
                 .build();
@@ -61,7 +59,7 @@ public class BaseServiceImpl implements BaseService {
 
     @Override
     @NotNull
-    public List<BotApiMethod<?>> mainMenuMessage(BotUserDTO botUser) {
+    public List<BotApiMethod<?>> mainMenuMessage(BotUser botUser) {
         String addOrderQuestion = ADD_ORDER_QUESTION.getMessage(botUser.getLanguage());
         String addOrder = ADD_ORDER.getMessage(botUser.getLanguage());
         return List.of(
@@ -71,13 +69,13 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public  BotApiMethod<?> processSettingLanguage(BotUserDTO botUserDTO, Integer messageId, BaseService baseService, ReplyMarkupService replyMarkupService) {
-        String language = botUserDTO.getLanguage().name();
-        String phone = botUserDTO.getPhone() == null ? "" : botUserDTO.getPhone();
-        String address = botUserDTO.getAddress() == null ? "" : botUserDTO.getAddress();
-        String message = BotMessages.SETTING_MENU.getMessageWPar(botUserDTO.getLanguage(), language, phone, address);
+    public  BotApiMethod<?> processSettingLanguage(BotUser botUser, Integer messageId, BaseService baseService, ReplyMarkupService replyMarkupService) {
+        String language = botUser.getLanguage().name();
+        String phone = botUser.getPhone() == null ? "" : botUser.getPhone();
+        String address = botUser.getAddress() == null ? "" : botUser.getAddress();
+        String message = BotMessages.SETTING_MENU.getMessageWPar(botUser.getLanguage(), language, phone, address);
         return baseService.editMessageText(
-                botUserDTO.getChatId(), message,
-                messageId, replyMarkupService.menuSetting(botUserDTO));
+                botUser.getChatId(), message,
+                messageId, replyMarkupService.menuSetting(botUser));
     }
 }

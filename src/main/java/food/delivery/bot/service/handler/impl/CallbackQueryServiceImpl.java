@@ -1,6 +1,6 @@
 package food.delivery.bot.service.handler.impl;
 
-import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.service.BotUserService;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.callback.*;
@@ -33,7 +33,7 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
     @Override
     public List<BotApiMethod<?>> callbackHandler(CallbackQuery callbackQuery) {
         try {
-            BotUserDTO botUser = botUserService.getOrRegisterUser((Message) callbackQuery.getMessage());
+            BotUser botUser = botUserService.getOrRegisterUser((Message) callbackQuery.getMessage());
             return switch (botUser.getRole()) {
                 case CLIENT -> clientCallbackService.handleClientState(callbackQuery, botUser);
                 case ADMIN -> adminCallbackService.handleAdminState(callbackQuery);

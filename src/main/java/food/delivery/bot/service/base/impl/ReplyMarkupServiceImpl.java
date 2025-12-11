@@ -1,14 +1,19 @@
 package food.delivery.bot.service.base.impl;
 
-import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.utils.BotCommands;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.List;
 
@@ -20,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReplyMarkupServiceImpl implements ReplyMarkupService {
     @Override
-    public InlineKeyboardMarkup mainMenu(BotUserDTO user) {
+    public InlineKeyboardMarkup mainMenu(BotUser user) {
         return InlineKeyboardMarkup.builder()
                 .keyboard(List.of(
                         new InlineKeyboardRow(
@@ -56,7 +61,7 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
     }
 
     @Override
-    public InlineKeyboardMarkup chooseLanguage(BotUserDTO botUserDTO, boolean showBack) {
+    public InlineKeyboardMarkup chooseLanguage(BotUser botUser, boolean showBack) {
 
         InlineKeyboardButton uz = InlineKeyboardButton.builder()
                 .text("\uD83C\uDDFA\uD83C\uDDFF") // 🇺🇿
@@ -76,7 +81,7 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
                     .build();
         }
         InlineKeyboardButton back = InlineKeyboardButton.builder()
-                .text(BotCommands.BACK.getMessage(botUserDTO.getLanguage()))
+                .text(BotCommands.BACK.getMessage(botUser.getLanguage()))
                 .callbackData(BotCommands.BACK.name())
                 .build();
 
@@ -88,7 +93,7 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
     }
 
     @Override
-    public InlineKeyboardMarkup menuSetting(BotUserDTO user) {
+    public InlineKeyboardMarkup menuSetting(BotUser user) {
         return InlineKeyboardMarkup.builder()
                 .keyboard(List.of(
                         new InlineKeyboardRow(
@@ -113,6 +118,37 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
                                         .build()
                         )
                 ))
+                .build();
+    }
+
+    @Override
+    public ReplyKeyboard sharePhone(BotUser botUser) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                List.of(
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.SHARE_PHONE.getMessage(botUser.getLanguage()))
+                                        .requestContact(true)
+                                        .build()
+                        )),
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.MAIN_MENU.getMessage(botUser.getLanguage()))
+                                        .build()
+                        ))
+                )
+        );
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    @Override
+    public ReplyKeyboard removeReplyKeyboard() {
+        return ReplyKeyboardRemove.builder()
+                .removeKeyboard(true)
+                .selective(false)
                 .build();
     }
 

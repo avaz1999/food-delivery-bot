@@ -1,6 +1,6 @@
 package food.delivery.bot.service.callback.impl;
 
-import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.State;
 import food.delivery.bot.service.base.StateService;
 import food.delivery.bot.service.callback.ClientCallbackQueryService;
@@ -21,7 +21,7 @@ public class ClientCallbackQueryServiceImpl implements ClientCallbackQueryServic
     private final StateService stateService;
 
     @Override
-    public List<BotApiMethod<?>> handleClientState(CallbackQuery callbackQuery, BotUserDTO botUser) {
+    public List<BotApiMethod<?>> handleClientState(CallbackQuery callbackQuery, BotUser botUser) {
         State currentState = botUser.getState();
         return switch (currentState) {
             case STATE_CHOOSE_LANG -> stateService.handleChooseLanguage(botUser, callbackQuery);

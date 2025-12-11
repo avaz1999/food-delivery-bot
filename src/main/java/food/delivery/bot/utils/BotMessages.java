@@ -27,8 +27,19 @@ public enum BotMessages {
     SETTING_MENU("TIL: {0}.\nTELEFON: {1}.\nMANZIL: {2}.\n\nQuyidagilardan birini tanlang.",
             "ЯЗЫК: {0}.\nТЕЛЕФОН: {1}.\nАДРЕС: {2}.\n\nВыберите один из следующих вариантов."),
 
-    BOT_SHARE_PHONE_NUMBER("Telefon raqmizni yuboring ☎️",
-            "Отправьте ваш номер телефона ☎️");
+    BOT_SHARE_PHONE_NUMBER("<b>Telefon raqmingizni yuboring</b> ☎️.\n<b>Yoki ushbu formatda</b> <code>(998*********)</code> <b> kiriting</b>",
+            "<b>Отправьте ваш номер телефона</b> ☎️.\n<b>Или введите в этом формате</b> <code>(998********)</code>"),
+
+    BOT_SHARE_PHONE_NUMBER_INVALID("<b>Telefon raqm yuborishda xatolik❓\nTelefon raqmingizni yuboring</b> ☎️.\n<b>Yoki ushbu formatda</b> <code>(998*********)</code> <b> kiriting</b>",
+            "<b>Ошибка при отправке номера телефона❓\nОтправьте ваш номер телефона</b> ☎️.\n<b>Или введите в этом формате</b> <code>(998********)</code>"),
+
+    INVALID_MESSAGE("Habar turida xatolik. ⚠️", "Ошибка типа сообщения. ⚠️"),
+
+    INVALID_PHONE_NUMBER("Ushbu telefon raqam sizga tegishli emas.",
+            "Этот номер телефона вам не принадлежит."),
+
+    SUCCESS_CHANGE_PHONE_NUMBER("Telefon raqamingiz muvofaqiyatli o'zgartirildi.✅",
+            "Ваш номер телефона успешно изменен.✅");
 
 
     public String getMessage(Language language) {

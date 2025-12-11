@@ -1,6 +1,5 @@
 package food.delivery.backend.service.impl;
 
-import food.delivery.backend.dto.request.BotUserDTO;
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.enums.Role;
@@ -23,27 +22,32 @@ public class BotUserServiceImpl implements BotUserService {
     private final BotUserRepository repository;
 
     @Override
-    public BotUserDTO getOrRegisterUser(Message message) {
+    public BotUser getOrRegisterUser(Message message) {
         BotUser botUser = repository.findByChatId(message.getChatId());
         if (botUser == null) return buildBotUser(message);
-        return buildBotUserDTO(botUser);
+        return botUser;
     }
 
     @Override
-    public void changeState(BotUserDTO botUserDTO, State state) {
-        BotUser botUser = repository.findByChatId(botUserDTO.getUserId());
+    public void changeState(BotUser botUser, State state) {
         botUser.setState(state);
         repository.save(botUser);
     }
 
     @Override
-    public Language saveLanguage(BotUserDTO botUserDTO, Language language) {
-        BotUser botUser = repository.findByChatId(botUserDTO.getUserId());
+    public Language saveLanguage(BotUser botUser, Language language) {
         botUser.setLanguage(language);
         return repository.save(botUser).getLanguage();
     }
 
-    private BotUserDTO buildBotUser(Message message) {
+    @Override
+    public BotUser savePhoneNumber(BotUser botUser, String phoneNumber) {
+        botUser.setPhone(phoneNumber);
+        botUser.setState(State.STATE_SETTING_MENU);
+        return repository.save(botUser);
+    }
+
+    private BotUser buildBotUser(Message message) {
         User telegramUser = message.getFrom();
         String firstName = telegramUser.getFirstName();
         String lastName = telegramUser.getLastName();
@@ -59,22 +63,6 @@ public class BotUserServiceImpl implements BotUserService {
                 .status(Status.ACTIVE)
                 .username(telegramUser.getUserName())
                 .build();
-        BotUser savedEntity = repository.save(entity);
-        return buildBotUserDTO(savedEntity);
-    }
-
-    private BotUserDTO buildBotUserDTO(BotUser savedEntity) {
-        return BotUserDTO.builder()
-                .id(savedEntity.getId())
-                .fullName(savedEntity.getFullName())
-                .chatId(savedEntity.getChatId())
-                .userId(savedEntity.getUserId())
-                .language(savedEntity.getLanguage())
-                .state(savedEntity.getState())
-                .status(savedEntity.getStatus())
-                .role(savedEntity.getRole())
-                .phone(savedEntity.getPhone())
-                .address(savedEntity.getAddress())
-                .build();
+        return repository.save(entity);
     }
 }

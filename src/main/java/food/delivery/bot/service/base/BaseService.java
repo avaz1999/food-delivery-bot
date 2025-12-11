@@ -1,6 +1,6 @@
 package food.delivery.bot.service.base;
 
-import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -21,7 +21,7 @@ public interface BaseService {
 
     EditMessageText editMessageText(Long chatId, String text, Integer messageId, InlineKeyboardMarkup replyKeyboard);
 
-    List<BotApiMethod<?>> mainMenuMessage(BotUserDTO botUser);
+    List<BotApiMethod<?>> mainMenuMessage(BotUser botUser);
 
-    BotApiMethod<?> processSettingLanguage(BotUserDTO botUserDTO, Integer messageId, BaseService baseService, ReplyMarkupService replyMarkupService);
+    BotApiMethod<?> processSettingLanguage(BotUser botUser, Integer messageId, BaseService baseService, ReplyMarkupService replyMarkupService);
 }

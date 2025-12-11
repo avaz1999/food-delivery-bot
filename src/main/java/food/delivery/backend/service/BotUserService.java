@@ -1,6 +1,6 @@
 package food.delivery.backend.service;
 
-import food.delivery.backend.dto.request.BotUserDTO;
+import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.enums.State;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
@@ -10,9 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.message.Message;
  * Date: 12/2/2025
  */
 public interface BotUserService {
-    BotUserDTO getOrRegisterUser(Message message);
+    BotUser getOrRegisterUser(Message message);
 
-    void changeState(BotUserDTO botUserDTO, State state);
+    void changeState(BotUser botUserDTO, State state);
 
-    Language saveLanguage(BotUserDTO botUser, Language language);
+    Language saveLanguage(BotUser botUser, Language language);
+
+    BotUser savePhoneNumber(BotUser botUser, String phoneNumber);
 }
