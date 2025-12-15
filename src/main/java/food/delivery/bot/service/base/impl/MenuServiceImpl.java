@@ -50,7 +50,7 @@ public class MenuServiceImpl implements MenuService {
 
     //-------------------SETTING--------------------------
     @Override
-    public List<BotApiMethod<?>> setting(BotUser botUserDTO, CallbackQuery callbackQuery) {
+    public List<BotApiMethod<?>> settingMenu(BotUser botUserDTO, CallbackQuery callbackQuery) {
         Integer messageId = callbackQuery.getMessage().getMessageId();
         BotApiMethod<?> editMessage = baseService.
                 processSettingLanguage(botUserDTO, messageId, baseService, replyMarkupService);
@@ -70,11 +70,6 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<BotApiMethod<?>> settingChangeAddressMenu(BotUser botUser, CallbackQuery callbackQuery) {
-        return List.of();
-    }
-
-    @Override
     public List<BotApiMethod<?>> settingChangePhoneMenu(BotUser botUser, CallbackQuery callbackQuery) {
         String addPhone = BOT_SHARE_PHONE_NUMBER.getMessage(botUser.getLanguage());
         Integer messageId = callbackQuery.getMessage().getMessageId();
@@ -82,6 +77,16 @@ public class MenuServiceImpl implements MenuService {
         SendMessage sendMessage = baseService.sendText(botUser.getChatId(), addPhone, replyMarkupService.sharePhone(botUser));
         botUserService.changeState(botUser, State.STATE_SETTING_PHONE_NUMBER);
         return List.of(deleteMessage, sendMessage);
+    }
+
+    @Override
+    public List<BotApiMethod<?>> settingChangeAddressMenu(BotUser botUser, CallbackQuery callbackQuery) {
+        String message = ADD_ADDRESS.getMessage(botUser.getLanguage());
+        Integer messageId = callbackQuery.getMessage().getMessageId();
+        DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
+        SendMessage sendLocation = baseService.sendText(botUser.getChatId(), message, replyMarkupService.senLocation(botUser));
+        botUserService.changeState(botUser, State.STATE_SETTING_ADDRESS);
+        return List.of(deleteMessage, sendLocation);
     }
 
     @Override

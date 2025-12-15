@@ -1,6 +1,5 @@
 package food.delivery.bot.service.message.impl;
 
-import food.delivery.backend.dto.request.BotUserDTO;
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.State;
 import food.delivery.backend.service.BotUserService;
@@ -39,7 +38,9 @@ public class ClientMessageServiceImpl implements ClientMessageService {
         return switch (botUser.getState()) {
             case STATE_START -> stateService.handleStartMessage(botUser, text);
             case STATE_SETTING_PHONE_NUMBER -> stateService.handleSettingPhoneNumber(botUser, message);
-            default -> throw new IllegalStateException("Unexpected value: ");
+            case STATE_SETTING_ADDRESS -> stateService.handleSettingLocation(botUser, message);
+            default ->
+                    List.of(baseService.sendText(botUser.getChatId(), BotMessages.INVALID_MESSAGE.getMessage(botUser.getLanguage()), null));
         };
     }
 

@@ -19,4 +19,6 @@ public interface ReplyMarkupService {
 
     ReplyKeyboard removeReplyKeyboard();
 
+    ReplyKeyboard senLocation(BotUser botUser);
+
 }

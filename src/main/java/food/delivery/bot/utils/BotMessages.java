@@ -39,7 +39,10 @@ public enum BotMessages {
             "Этот номер телефона вам не принадлежит."),
 
     SUCCESS_CHANGE_PHONE_NUMBER("Telefon raqamingiz muvofaqiyatli o'zgartirildi.✅",
-            "Ваш номер телефона успешно изменен.✅");
+            "Ваш номер телефона успешно изменен.✅"),
+
+    ADD_ADDRESS("Maznilingizni yuboring \uD83D\uDCCD.\nYoki maznilingizni kiriting",
+            "Отправьте свой адрес \uD83D\uDCCD.\nИли введите свой адрес.");
 
 
     public String getMessage(Language language) {

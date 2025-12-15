@@ -11,7 +11,7 @@ public enum State {
     STATE_MAIN_MENU,
     STATE_SETTING_MENU,
     STATE_SETTING_CHOOSE_LANG,
-    STATE_SETTING_PHONE_NUMBER,
+    STATE_SETTING_PHONE_NUMBER, STATE_SETTING_ADDRESS,
 
 
 //    start -> choose_lang -> choose_city -> enter_phone -> main_menu

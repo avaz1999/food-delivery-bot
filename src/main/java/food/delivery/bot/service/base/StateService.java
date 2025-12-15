@@ -23,4 +23,6 @@ public interface StateService {
     List<BotApiMethod<?>> handleSettingChangeLang(BotUser botUser, CallbackQuery callbackQuery);
 
     List<BotApiMethod<?>> handleSettingPhoneNumber(BotUser botUser, Message message);
+
+    List<BotApiMethod<?>> handleSettingLocation(BotUser botUser, Message message);
 }

@@ -24,6 +24,8 @@ public enum BotCommands {
 
     BACK("ORTGA ⬅️", "НАЗАД ⬅️"),
     SHARE_PHONE("RAQAMNI ULASHISH ☎️", "ПОДЕЛИТЕСЬ НОМЕРОМ ☎️"),
+
+    SHARE_ADDRESS("\uD83D\uDCCD LOCATSIYA YUBORISH","\uD83D\uDCCD ОТПРАВИТЬ МЕСТОПОЛОЖЕНИЕ")
     ;
     private final String uz;
     private final String ru;

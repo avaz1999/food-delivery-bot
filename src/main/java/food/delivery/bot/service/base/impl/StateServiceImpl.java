@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Contact;
+import org.telegram.telegrambots.meta.api.objects.location.Location;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 import java.util.ArrayList;
@@ -60,8 +61,18 @@ public class StateServiceImpl implements StateService {
             return processContact(botUser, message.getContact(), message.getMessageId());
         } else if (message.hasText()) {
             return processPhoneNumberText(botUser, message);
-        }
-        return List.of();
+        } else
+            return List.of(baseService.sendText(botUser.getChatId(), BotMessages.INVALID_MESSAGE.getMessage(botUser.getLanguage()), null));
+    }
+
+    @Override
+    public List<BotApiMethod<?>> handleSettingLocation(BotUser botUser, Message message) {
+        if (message.hasLocation()) {
+            return processLocation(botUser, message.getLocation());
+        } else if (message.hasText()) {
+            return processLocationText(botUser, message.getText());
+        } else
+            return List.of(baseService.sendText(botUser.getChatId(), BotMessages.INVALID_MESSAGE.getMessage(botUser.getLanguage()), null));
     }
 
 
@@ -73,7 +84,7 @@ public class StateServiceImpl implements StateService {
             case "MENU_ABOUT_US" -> menuService.aboutUs(botUser, data);
             case "MENU_MY_ORDER" -> menuService.myOrders(botUser, data);
             case "MENU_COMMENT" -> menuService.comment(botUser, data);
-            case "MENU_SETTINGS" -> menuService.setting(botUser, callbackQuery);
+            case "MENU_SETTINGS" -> menuService.settingMenu(botUser, callbackQuery);
             default -> throw new IllegalStateException("Unexpected value: " + data);
         };
     }
@@ -156,7 +167,13 @@ public class StateServiceImpl implements StateService {
         return response;
     }
 
+    private List<BotApiMethod<?>> processLocation(BotUser botUser, Location location) {
+        return null;
+    }
 
+    private List<BotApiMethod<?>> processLocationText(BotUser botUser, String text) {
+        return null;
+    }
     @NotNull
     private List<BotApiMethod<?>> processLanguage(BotUser botUser, CallbackQuery callbackQuery) {
         String data = callbackQuery.getData();
