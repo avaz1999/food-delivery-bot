@@ -17,4 +17,8 @@ public interface BotUserService {
     Language saveLanguage(BotUser botUser, Language language);
 
     BotUser savePhoneNumber(BotUser botUser, String phoneNumber);
+
+    BotUser saveAddress(BotUser botUser);
+
+    BotUser saveTempAddress(BotUser botUser);
 }

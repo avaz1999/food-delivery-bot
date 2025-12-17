@@ -21,4 +21,5 @@ public interface ReplyMarkupService {
 
     ReplyKeyboard senLocation(BotUser botUser);
 
+    ReplyKeyboard checkAddress(BotUser botUser);
 }

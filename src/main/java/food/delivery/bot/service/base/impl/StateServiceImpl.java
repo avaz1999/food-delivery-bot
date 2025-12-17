@@ -4,6 +4,7 @@ import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.enums.State;
 import food.delivery.backend.service.BotUserService;
+import food.delivery.backend.service.LocationService;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.MenuService;
 import food.delivery.bot.service.base.ReplyMarkupService;
@@ -20,6 +21,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.location.Location;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ public class StateServiceImpl implements StateService {
     private final BaseService baseService;
     private final BotUserService botUserService;
     private final ReplyMarkupService replyMarkupService;
+    private final LocationService locationService;
 
     @Override
     public List<BotApiMethod<?>> handleStartMessage(BotUser botUser, String text) {
@@ -70,9 +73,9 @@ public class StateServiceImpl implements StateService {
         if (message.hasLocation()) {
             return processLocation(botUser, message.getLocation());
         } else if (message.hasText()) {
-            return processLocationText(botUser, message.getText());
+            return processLocationText(botUser, message);
         } else
-            return List.of(baseService.sendText(botUser.getChatId(), BotMessages.INVALID_MESSAGE.getMessage(botUser.getLanguage()), null));
+            return List.of(baseService.deleteMessage(botUser.getChatId(), message.getMessageId()));
     }
 
 
@@ -168,12 +171,61 @@ public class StateServiceImpl implements StateService {
     }
 
     private List<BotApiMethod<?>> processLocation(BotUser botUser, Location location) {
-        return null;
+        Double latitude = location.getLatitude();
+        Double longitude = location.getLongitude();
+        String address = locationService.getAddressByLongitudeAndLatitude(latitude, longitude);
+        botUser.setTemAddress(address);
+        botUser = botUserService.saveTempAddress(botUser);
+
+        String message = BotMessages.USER_ADDRESS.getMessageWPar(botUser.getLanguage(), address);
+        ReplyKeyboard replyKeyboard = replyMarkupService.checkAddress(botUser);
+        return List.of(baseService.sendText(botUser.getChatId(), message, replyKeyboard));
     }
 
-    private List<BotApiMethod<?>> processLocationText(BotUser botUser, String text) {
-        return null;
+    private List<BotApiMethod<?>> processLocationText(BotUser botUser, Message message) {
+        String text = message.getText();
+        if (Objects.equals(BotCommands.MAIN_MENU.getMessage(botUser.getLanguage()), text)) {
+            return handleMainMenu(botUser);
+        } else if (Objects.equals(BotCommands.CHECK_ADDRESS_YES.getMessage(botUser.getLanguage()), text)) {
+            return handleCheckAddressYes(botUser);
+        } else if (Objects.equals(BotCommands.CHECK_ADDRESS_NO.getMessage(botUser.getLanguage()), text)) {
+            return List.of(baseService.sendText(botUser.getChatId(), BotMessages.ADD_ADDRESS.getMessage(botUser.getLanguage()), replyMarkupService.senLocation(botUser)));
+        } else {
+            return handleTextAddress(botUser, message.getText());
+        }
     }
+
+    private List<BotApiMethod<?>> handleTextAddress(BotUser botUser, String text) {
+        botUser.setTemAddress(text);
+        botUser = botUserService.saveTempAddress(botUser);
+        String sendAddress = BotMessages.USER_ADDRESS.getMessageWPar(botUser.getLanguage(), botUser.getTemAddress());
+        ReplyKeyboard replyKeyboard = replyMarkupService.checkAddress(botUser);
+        return List.of(baseService.sendText(botUser.getChatId(), sendAddress, replyKeyboard));
+    }
+
+    private List<BotApiMethod<?>> handleCheckAddressYes(BotUser botUser) {
+        botUser = botUserService.saveAddress(botUser);
+        String language = botUser.getLanguage().name();
+        String phone = botUser.getPhone() == null ? "" : botUser.getPhone();
+        String address = botUser.getAddress() == null ? "" : botUser.getAddress();
+        String message = BotMessages.SETTING_MENU.getMessageWPar(botUser.getLanguage(), language, phone, address);
+        String savedAddress = BotMessages.SAVED_ADDRESS.getMessage(botUser.getLanguage());
+        SendMessage sendMessage = baseService.sendText(botUser.getChatId(), savedAddress, replyMarkupService.removeReplyKeyboard());
+        SendMessage sendSettingMenu = baseService.sendText(botUser.getChatId(), message, replyMarkupService.menuSetting(botUser));
+        return List.of(sendMessage, sendSettingMenu);
+    }
+
+    private List<BotApiMethod<?>> handleMainMenu(BotUser botUser) {
+        List<BotApiMethod<?>> res = baseService.mainMenuMessage(botUser);
+        List<BotApiMethod<?>> result = new ArrayList<>(res);
+        String message = BotMessages.ADD_ORDER_QUESTION.getMessage(botUser.getLanguage());
+        SendMessage sendMessage = baseService.sendText(botUser.getChatId(), message, replyMarkupService.removeReplyKeyboard());
+        result.removeFirst();
+        result.addFirst(sendMessage);
+        botUserService.changeState(botUser, State.STATE_MAIN_MENU);
+        return result;
+    }
+
     @NotNull
     private List<BotApiMethod<?>> processLanguage(BotUser botUser, CallbackQuery callbackQuery) {
         String data = callbackQuery.getData();
@@ -207,7 +259,6 @@ public class StateServiceImpl implements StateService {
 
         String cleaned = text.replaceAll("[^\\d+]", "");
 
-        // +998XXYYYYYYY or 998XXYYYYYYY
         if (cleaned.matches("(\\+?998)\\d{9}")) {
             return cleaned.startsWith("+") ? cleaned.substring(1) : cleaned;
         }

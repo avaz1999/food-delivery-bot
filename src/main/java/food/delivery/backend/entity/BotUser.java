@@ -34,6 +34,9 @@ public class BotUser extends GenericEntity {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "tem_address")
+    private String temAddress;
+
     @Column(name = "user_id")
     private Long userId;
 

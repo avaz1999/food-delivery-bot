@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum BotCommands {
-    MAIN_MENU("ASOSIY MENU ⬅️", "ГЛАВНОЕ МЕНЮ ⬅️"),
+    MAIN_MENU("⬅️ ASOSIY MENU", "⬅️ ГЛАВНОЕ МЕНЮ"),
     MENU_START_ORDER("Buyurtma berish \uD83D\uDED2", "Заказ \uD83D\uDED2"),
     MENU_ABOUT_US("Biz haqimizda ℹ️", "О нас ℹ️"),
     MENU_MY_ORDER("Mening buyurtmalarim \uD83D\uDECD", "Мои заказы \uD83D\uDECD"),
@@ -25,8 +25,11 @@ public enum BotCommands {
     BACK("ORTGA ⬅️", "НАЗАД ⬅️"),
     SHARE_PHONE("RAQAMNI ULASHISH ☎️", "ПОДЕЛИТЕСЬ НОМЕРОМ ☎️"),
 
-    SHARE_ADDRESS("\uD83D\uDCCD LOCATSIYA YUBORISH","\uD83D\uDCCD ОТПРАВИТЬ МЕСТОПОЛОЖЕНИЕ")
-    ;
+    SHARE_ADDRESS("\uD83D\uDCCD LOCATSIYA YUBORISH",
+            "\uD83D\uDCCD ОТПРАВИТЬ МЕСТОПОЛОЖЕНИЕ"),
+
+    CHECK_ADDRESS_YES("✅ HA", "✅ ДА"),
+    CHECK_ADDRESS_NO("❌ YO'Q", "❌️ НЕТ");
     private final String uz;
     private final String ru;
 

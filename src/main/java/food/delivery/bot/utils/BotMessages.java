@@ -42,7 +42,12 @@ public enum BotMessages {
             "Ваш номер телефона успешно изменен.✅"),
 
     ADD_ADDRESS("Maznilingizni yuboring \uD83D\uDCCD.\nYoki maznilingizni kiriting",
-            "Отправьте свой адрес \uD83D\uDCCD.\nИли введите свой адрес.");
+            "Отправьте свой адрес \uD83D\uDCCD.\nИли введите свой адрес."),
+
+    USER_ADDRESS("<b>Sizning manzilingiz to'g'rimi?</b>\n<b>{0}</b>",
+            "<b>Ваш адрес указан верно?</b>\n<b>{0}</b>"),
+
+    SAVED_ADDRESS("✅ Manzilingiz saqlandi.", "✅ Ваш адрес сохранен.");
 
 
     public String getMessage(Language language) {

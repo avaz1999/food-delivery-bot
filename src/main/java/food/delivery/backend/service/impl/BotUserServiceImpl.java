@@ -47,6 +47,18 @@ public class BotUserServiceImpl implements BotUserService {
         return repository.save(botUser);
     }
 
+    @Override
+    public BotUser saveAddress(BotUser botUser) {
+        botUser.setAddress(botUser.getTemAddress() == null ? "" : botUser.getTemAddress());
+        botUser.setState(State.STATE_SETTING_MENU);
+        return repository.save(botUser);
+    }
+
+    @Override
+    public BotUser saveTempAddress(BotUser botUser) {
+        return repository.save(botUser);
+    }
+
     private BotUser buildBotUser(Message message) {
         User telegramUser = message.getFrom();
         String firstName = telegramUser.getFirstName();

@@ -176,5 +176,25 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
 
     }
 
+    @Override
+    public ReplyKeyboard checkAddress(BotUser botUser) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                List.of(
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.CHECK_ADDRESS_YES.getMessage(botUser.getLanguage()))
+                                        .build(),
+                                KeyboardButton.builder()
+                                        .text(BotCommands.CHECK_ADDRESS_NO.getMessage(botUser.getLanguage()))
+                                        .build()
+                        ))
+                )
+        );
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
 
 }

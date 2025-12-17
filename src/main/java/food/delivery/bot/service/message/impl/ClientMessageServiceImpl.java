@@ -39,8 +39,7 @@ public class ClientMessageServiceImpl implements ClientMessageService {
             case STATE_START -> stateService.handleStartMessage(botUser, text);
             case STATE_SETTING_PHONE_NUMBER -> stateService.handleSettingPhoneNumber(botUser, message);
             case STATE_SETTING_ADDRESS -> stateService.handleSettingLocation(botUser, message);
-            default ->
-                    List.of(baseService.sendText(botUser.getChatId(), BotMessages.INVALID_MESSAGE.getMessage(botUser.getLanguage()), null));
+            default -> List.of(baseService.deleteMessage(botUser.getChatId(), message.getMessageId()));
         };
     }
 
