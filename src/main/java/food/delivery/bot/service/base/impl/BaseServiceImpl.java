@@ -29,7 +29,7 @@ public class BaseServiceImpl implements BaseService {
     private final ReplyMarkupService replyMarkupService;
 
     @Override
-    public SendMessage sendText(Long chatId, String text, ReplyKeyboard replyKeyboard) {
+    public SendMessage sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard) {
         SendMessage sendMessage = SendMessage.builder()
                 .parseMode("HTML")
                 .chatId(chatId.toString())
@@ -63,8 +63,8 @@ public class BaseServiceImpl implements BaseService {
         String addOrderQuestion = ADD_ORDER_QUESTION.getMessage(botUser.getLanguage());
         String addOrder = ADD_ORDER.getMessage(botUser.getLanguage());
         return List.of(
-                sendText(botUser.getChatId(), addOrderQuestion, null),
-                sendText(botUser.getChatId(), addOrder, replyMarkupService.mainMenu(botUser))
+                sendMessage(botUser.getChatId(), addOrderQuestion, null),
+                sendMessage(botUser.getChatId(), addOrder, replyMarkupService.mainMenu(botUser))
         );
     }
 
@@ -77,5 +77,13 @@ public class BaseServiceImpl implements BaseService {
         return baseService.editMessageText(
                 botUser.getChatId(), message,
                 messageId, replyMarkupService.menuSetting(botUser));
+    }
+
+    @Override
+    public List<BotApiMethod<?>> deleteAndSendMessageSender(BotUser botUser, Integer messageId, String message, ReplyKeyboard reply) {
+        DeleteMessage deleteMessage = deleteMessage(botUser.getChatId(), messageId);
+        SendMessage sendMessage = sendMessage(botUser.getChatId(),
+                message, reply);
+        return List.of(deleteMessage, sendMessage);
     }
 }

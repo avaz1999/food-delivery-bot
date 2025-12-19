@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.List;
 
@@ -29,22 +30,27 @@ public class MenuServiceImpl implements MenuService {
     private final BotUserService botUserService;
 
     @Override
-    public List<BotApiMethod<?>> addOrder(BotUser botUserDTO, String data) {
+    public List<BotApiMethod<?>> addOrder(BotUser botUser, CallbackQuery callbackQuery) {
+        DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), callbackQuery.getMessage().getMessageId());
+        ReplyKeyboard replyKeyboard = replyMarkupService.orderType(botUser);
+        String message = CHOOSE_ORDER_TYPE.getMessage(botUser.getLanguage());
+        SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), message, replyKeyboard);
+        botUserService.changeState(botUser, State.STATE_CHOOSE_ORDER_TYPE);
+        return List.of(deleteMessage, sendMessage);
+    }
+
+    @Override
+    public List<BotApiMethod<?>> aboutUs(BotUser botUserDTO, CallbackQuery callbackQuery) {
         return List.of();
     }
 
     @Override
-    public List<BotApiMethod<?>> aboutUs(BotUser botUserDTO, String data) {
+    public List<BotApiMethod<?>> myOrders(BotUser botUserDTO, CallbackQuery callbackQuery) {
         return List.of();
     }
 
     @Override
-    public List<BotApiMethod<?>> myOrders(BotUser botUserDTO, String data) {
-        return List.of();
-    }
-
-    @Override
-    public List<BotApiMethod<?>> comment(BotUser botUserDTO, String data) {
+    public List<BotApiMethod<?>> comment(BotUser botUserDTO, CallbackQuery callbackQuery) {
         return List.of();
     }
 
@@ -74,7 +80,7 @@ public class MenuServiceImpl implements MenuService {
         String addPhone = BOT_SHARE_PHONE_NUMBER.getMessage(botUser.getLanguage());
         Integer messageId = callbackQuery.getMessage().getMessageId();
         DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
-        SendMessage sendMessage = baseService.sendText(botUser.getChatId(), addPhone, replyMarkupService.sharePhone(botUser));
+        SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), addPhone, replyMarkupService.sharePhone(botUser));
         botUserService.changeState(botUser, State.STATE_SETTING_PHONE_NUMBER);
         return List.of(deleteMessage, sendMessage);
     }
@@ -84,7 +90,7 @@ public class MenuServiceImpl implements MenuService {
         String message = ADD_ADDRESS.getMessage(botUser.getLanguage());
         Integer messageId = callbackQuery.getMessage().getMessageId();
         DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
-        SendMessage sendLocation = baseService.sendText(botUser.getChatId(), message, replyMarkupService.senLocation(botUser));
+        SendMessage sendLocation = baseService.sendMessage(botUser.getChatId(), message, replyMarkupService.sendLocation(botUser));
         botUserService.changeState(botUser, State.STATE_SETTING_ADDRESS);
         return List.of(deleteMessage, sendLocation);
     }

@@ -25,4 +25,8 @@ public interface StateService {
     List<BotApiMethod<?>> handleSettingPhoneNumber(BotUser botUser, Message message);
 
     List<BotApiMethod<?>> handleSettingLocation(BotUser botUser, Message message);
+
+    List<BotApiMethod<?>> handleOrderType(BotUser botUser, Message message);
+
+    List<BotApiMethod<?>> handleChooseLocation(BotUser botUser, Message message);
 }

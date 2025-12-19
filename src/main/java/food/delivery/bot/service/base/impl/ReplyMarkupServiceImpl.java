@@ -5,6 +5,7 @@ import food.delivery.backend.enums.Language;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.utils.BotCommands;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -15,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -153,7 +155,7 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
     }
 
     @Override
-    public ReplyKeyboard senLocation(BotUser botUser) {
+    public ReplyKeyboard sendLocation(BotUser botUser) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
                 List.of(
                         new KeyboardRow(List.of(
@@ -193,6 +195,78 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setSelective(true);
         replyKeyboardMarkup.setOneTimeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    @Override
+    public ReplyKeyboard orderType(BotUser botUser) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                List.of(
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.ORDER_DELIVERY.getMessage(botUser.getLanguage()))
+                                        .build(),
+                                KeyboardButton.builder()
+                                        .text(BotCommands.ORDER_PICKUP.getMessage(botUser.getLanguage()))
+                                        .build()
+                        )),
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.MAIN_MENU.getMessage(botUser.getLanguage()))
+                                        .build()
+                        ))
+                )
+        );
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    @Override
+    public ReplyKeyboard sendLocationOrChooseAddress(BotUser botUser) {
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        rows.add(new KeyboardRow(List.of(
+                KeyboardButton.builder()
+                        .text(BotCommands.SHARE_ADDRESS.getMessage(botUser.getLanguage()))
+                        .requestLocation(true)
+                        .build()
+        )));
+
+        String savedAddress = botUser.getAddress();
+        return buildKeyboardWithSavedValue(botUser, savedAddress, rows);
+    }
+
+    @Override
+    public ReplyKeyboard enterName(BotUser botUser) {
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        String savedFullName = botUser.getFullName();
+        return buildKeyboardWithSavedValue(botUser, savedFullName, rows);
+    }
+
+    @NotNull
+    private ReplyKeyboardMarkup buildKeyboardWithSavedValue(BotUser botUser, String savedValue, List<KeyboardRow> rows) {
+        if (savedValue != null && !savedValue.trim().isEmpty()) {
+            rows.add(new KeyboardRow(List.of(
+                    KeyboardButton.builder()
+                            .text("✅ " + savedValue)
+                            .build()
+            )));
+        }
+
+        rows.add(new KeyboardRow(List.of(
+                KeyboardButton.builder()
+                        .text(BotCommands.BACK.getMessage(botUser.getLanguage()))
+                        .build()
+        )));
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(rows);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
         return replyKeyboardMarkup;
     }
 

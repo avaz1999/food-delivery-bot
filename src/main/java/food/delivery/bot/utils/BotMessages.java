@@ -47,7 +47,14 @@ public enum BotMessages {
     USER_ADDRESS("<b>Sizning manzilingiz to'g'rimi?</b>\n<b>{0}</b>",
             "<b>Ваш адрес указан верно?</b>\n<b>{0}</b>"),
 
-    SAVED_ADDRESS("✅ Manzilingiz saqlandi.", "✅ Ваш адрес сохранен.");
+    SAVED_ADDRESS("✅ Manzilingiz saqlandi.", "✅ Ваш адрес сохранен."),
+
+    CHOOSE_ORDER_TYPE("Buyurtma turini tanlang.", "Выберите тип заказа"),
+
+    SEND_LOCATION_OR_CHOOSE_ADDRESS("Yetkazib berish uchun geo-lokatisiya yuboring yoki manzilni tanlang",
+            "Отправить данные о местоположении или выбрать адрес доставки"),
+
+    ENTER_NAME("Ismingizni kiriting", "Введите ваше имя");
 
 
     public String getMessage(Language language) {

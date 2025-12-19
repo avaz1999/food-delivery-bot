@@ -19,7 +19,13 @@ public interface ReplyMarkupService {
 
     ReplyKeyboard removeReplyKeyboard();
 
-    ReplyKeyboard senLocation(BotUser botUser);
+    ReplyKeyboard sendLocation(BotUser botUser);
 
     ReplyKeyboard checkAddress(BotUser botUser);
+
+    ReplyKeyboard orderType(BotUser botUser);
+
+    ReplyKeyboard sendLocationOrChooseAddress(BotUser botUser);
+
+    ReplyKeyboard enterName(BotUser botUser);
 }

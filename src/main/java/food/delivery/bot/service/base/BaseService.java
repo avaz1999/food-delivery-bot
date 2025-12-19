@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 12/2/2025
  */
 public interface BaseService {
-    SendMessage sendText(Long chatId, String text, ReplyKeyboard replyKeyboard);
+    SendMessage sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard);
 
     DeleteMessage deleteMessage(Long chatId, Integer messageId);
 
@@ -24,4 +24,8 @@ public interface BaseService {
     List<BotApiMethod<?>> mainMenuMessage(BotUser botUser);
 
     BotApiMethod<?> processSettingLanguage(BotUser botUser, Integer messageId, BaseService baseService, ReplyMarkupService replyMarkupService);
+
+    List<BotApiMethod<?>> deleteAndSendMessageSender(BotUser botUser, Integer messageId, String message, ReplyKeyboard reply);
+
+
 }

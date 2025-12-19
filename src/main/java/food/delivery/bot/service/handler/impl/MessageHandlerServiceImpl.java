@@ -43,7 +43,7 @@ public class MessageHandlerServiceImpl implements MessageHandlerService {
         } catch (Exception e) {
             log.error("Message handling error", e);
             Long chatId = message.getChatId();
-            return List.of(baseService.sendText(chatId, "Service temporary error", null));
+            return List.of(baseService.sendMessage(chatId, "Service temporary error", null));
         }
 
     }

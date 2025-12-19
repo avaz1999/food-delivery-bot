@@ -29,7 +29,13 @@ public enum BotCommands {
             "\uD83D\uDCCD ОТПРАВИТЬ МЕСТОПОЛОЖЕНИЕ"),
 
     CHECK_ADDRESS_YES("✅ HA", "✅ ДА"),
-    CHECK_ADDRESS_NO("❌ YO'Q", "❌️ НЕТ");
+
+    CHECK_ADDRESS_NO("❌ YO'Q", "❌️ НЕТ"),
+
+    ORDER_DELIVERY("\uD83D\uDE95 YETKAZIB BERISH",
+            "\uD83D\uDE95 ДОСТАВКА"),
+
+    ORDER_PICKUP("\uD83D\uDEB6 OLIB KETISH","\uD83D\uDEB6 САМОВЫВОЗ");
     private final String uz;
     private final String ru;
 

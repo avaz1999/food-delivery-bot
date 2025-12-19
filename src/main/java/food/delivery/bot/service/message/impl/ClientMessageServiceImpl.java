@@ -39,6 +39,9 @@ public class ClientMessageServiceImpl implements ClientMessageService {
             case STATE_START -> stateService.handleStartMessage(botUser, text);
             case STATE_SETTING_PHONE_NUMBER -> stateService.handleSettingPhoneNumber(botUser, message);
             case STATE_SETTING_ADDRESS -> stateService.handleSettingLocation(botUser, message);
+
+            case STATE_CHOOSE_ORDER_TYPE -> stateService.handleOrderType(botUser, message);
+            case STATE_CHOOSE_LOCATION -> stateService.handleChooseLocation(botUser, message);
             default -> List.of(baseService.deleteMessage(botUser.getChatId(), message.getMessageId()));
         };
     }
@@ -59,8 +62,8 @@ public class ClientMessageServiceImpl implements ClientMessageService {
         botUserService.changeState(botUser, State.STATE_CHOOSE_LANG);
 
         return List.of(
-                baseService.sendText(botUser.getChatId(), welcome, null),
-                baseService.sendText(botUser.getChatId(), chooseLang, replyMarkupService.chooseLanguage(botUser, false))
+                baseService.sendMessage(botUser.getChatId(), welcome, null),
+                baseService.sendMessage(botUser.getChatId(), chooseLang, replyMarkupService.chooseLanguage(botUser, false))
         );
     }
 }

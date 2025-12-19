@@ -11,10 +11,10 @@ import java.util.List;
  * Date: 12/6/2025
  */
 public interface MenuService {
-    List<BotApiMethod<?>> addOrder(BotUser botUser, String data);
-    List<BotApiMethod<?>> aboutUs(BotUser botUser, String data);
-    List<BotApiMethod<?>> myOrders(BotUser botUser, String data);
-    List<BotApiMethod<?>> comment(BotUser botUser, String data);
+    List<BotApiMethod<?>> addOrder(BotUser botUser, CallbackQuery callbackQuery);
+    List<BotApiMethod<?>> aboutUs(BotUser botUser, CallbackQuery callbackQuery);
+    List<BotApiMethod<?>> myOrders(BotUser botUser, CallbackQuery callbackQuery);
+    List<BotApiMethod<?>> comment(BotUser botUser, CallbackQuery callbackQuery);
     List<BotApiMethod<?>> settingMenu(BotUser botUser, CallbackQuery callbackQuery);
 
     //Setting menu

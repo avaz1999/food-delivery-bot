@@ -44,7 +44,7 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
         } catch (Exception e) {
             log.error("CallbackQuery handling error", e);
             Long chatId = callbackQuery.getMessage().getChatId();
-            return List.of(baseService.sendText(chatId, "Service temporary error", null));
+            return List.of(baseService.sendMessage(chatId, "Service temporary error", null));
         }
 
     }
