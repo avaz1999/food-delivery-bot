@@ -21,7 +21,13 @@ public enum ResponseCodes {
 
     //Category
     CATEGORY_ALREADY_EXISTS(-30, "category.already.exists"),
-    CATEGORY_PARENT_NOT_FOUND(-31, "category.parent.not.found");
+    CATEGORY_PARENT_NOT_FOUND(-31, "category.parent.not.found"),
+    USERNAME_OR_PASSWORD_INCORRECT(-18, "username.or.password.incorrect"),
+    LOGIN_FAILED(-19, "login.failed"),
+    FORBIDDEN(-20, "forbidden"),
+    UNAUTHORIZED(-21, "unauthorized"),
+    INVALID_TOKEN(-22, "invalid.token"),
+    FAIL(-23, "fail"), USER_NOT_FOUND(-24, "user.not.found");
     private final Integer code; // response code
     private final String message;
 }

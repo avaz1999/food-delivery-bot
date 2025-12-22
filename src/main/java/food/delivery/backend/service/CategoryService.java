@@ -5,6 +5,7 @@ import food.delivery.backend.exception.BadRequestException;
 import food.delivery.backend.exception.ResponseCodes;
 import food.delivery.backend.model.request.CategoryCreateRequest;
 import food.delivery.backend.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,14 @@ import org.springframework.stereotype.Service;
 public class CategoryService {
     private final CategoryRepository repository;
 
+    @Transactional
     public ResponseCodes create(CategoryCreateRequest request) {
         if (repository.existsByNameUz(request.getNameUz()))
             throw new BadRequestException(ResponseCodes.CATEGORY_ALREADY_EXISTS);
 
         if (repository.existsByNameRu(request.getNameRu()))
             throw new BadRequestException(ResponseCodes.CATEGORY_ALREADY_EXISTS);
+
         Category category = Category.builder()
                 .nameUz(request.getNameUz())
                 .nameRu(request.getNameRu())
@@ -37,7 +40,7 @@ public class CategoryService {
             category.setParent(parent);
         }
         repository.save(category);
-        return null;
+        return ResponseCodes.SUCCESS;
 
     }
 }

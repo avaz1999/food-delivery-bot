@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import food.delivery.backend.exception.BadRequestException;
 import food.delivery.backend.exception.ResponseCodes;
 import food.delivery.backend.utils.MessageHelper;
 import lombok.Data;
@@ -24,6 +27,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GenericResponse<T> implements Serializable {
+    private static final ObjectMapper mapper = new ObjectMapper();
     private Integer code = ResponseCodes.SUCCESS.getCode();
     private String message = MessageHelper.get("success.message");
     @JsonProperty("timestamp")
@@ -66,5 +70,17 @@ public class GenericResponse<T> implements Serializable {
 
     public static GenericResponse<String> error(Integer code, String message) {
         return new GenericResponse<>(code, message);
+    }
+
+    public static GenericResponse<String> fail(ResponseCodes responseCodes) {
+        return new GenericResponse<>(responseCodes.getCode(), responseCodes.getMessage());
+    }
+
+    public String toJson() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new BadRequestException(ResponseCodes.FAIL);
+        }
     }
 }
