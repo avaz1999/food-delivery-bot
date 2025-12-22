@@ -105,8 +105,42 @@ public class StateServiceImpl implements StateService {
         if (message.hasLocation()) {
             return processLocation(botUser, message.getLocation());
         }
+        String text = message.getText();
 
+        if (Objects.equals(BotCommands.CHECK_YES.getMessage(botUser.getLanguage()), text)) {
+            String sendText = BotMessages.CHOOSE_CATEGORY_ITEM.getMessage(botUser.getLanguage());
+            ReplyKeyboard replyKeyboard = replyMarkupService.itemCategory(botUser);
+            botUserService.changeState(botUser, State.CHOOSE_ITEM_CATEGORY);
+            return List.of(baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard));
+        } else if (Objects.equals(BotCommands.CHECK_NO.getMessage(botUser.getLanguage()), text)) {
+
+        }
+        if (!text.startsWith("✅ ")) {
+            String sendText = BotMessages.SEND_LOCATION_OR_CHOOSE_ADDRESS.getMessage(botUser.getLanguage());
+            ReplyKeyboard replyKeyboard = replyMarkupService.sendLocationOrChooseAddress(botUser);
+            SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard);
+            DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), message.getMessageId());
+            return List.of(deleteMessage, sendMessage);
+        }
         return List.of();
+    }
+
+    @Override
+    public List<BotApiMethod<?>> handleChooseName(BotUser botUser, Message message) {
+        if (!message.hasText()) {
+            DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), message.getMessageId());
+            SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), message.getText(), replyMarkupService.enterName(botUser));
+            return List.of(deleteMessage, sendMessage);
+        }
+        String text = message.getText();
+        if (Objects.equals(BotCommands.CHECK_YES.getMessage(botUser.getLanguage()), text)) {
+
+        }
+        botUser.setFullName(text);
+        String sendText = BotMessages.ACCEPT_NAME.getMessageWPar(botUser.getLanguage(), botUser.getFullName());
+        ReplyKeyboard replyKeyboard = replyMarkupService.confirmData(botUser);
+        SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard);
+        return List.of(sendMessage);
     }
 
     private List<BotApiMethod<?>> handleMainMenuCommand(BotUser botUser) {
@@ -138,8 +172,8 @@ public class StateServiceImpl implements StateService {
     private List<BotApiMethod<?>> processOrderDelivery(BotUser botUser) {
         String sendText = BotMessages.SEND_LOCATION_OR_CHOOSE_ADDRESS.getMessage(botUser.getLanguage());
         ReplyKeyboard replyKeyboard = replyMarkupService.sendLocationOrChooseAddress(botUser);
-        botUserService.changeState(botUser, State.STATE_CHOOSE_LOCATION);
         SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard);
+        botUserService.changeState(botUser, State.STATE_CHOOSE_LOCATION);
         return List.of(sendMessage);
     }
 
@@ -243,7 +277,7 @@ public class StateServiceImpl implements StateService {
         botUser = botUserService.saveTempAddress(botUser);
 
         String message = BotMessages.USER_ADDRESS.getMessageWPar(botUser.getLanguage(), address);
-        ReplyKeyboard replyKeyboard = replyMarkupService.checkAddress(botUser);
+        ReplyKeyboard replyKeyboard = replyMarkupService.confirmData(botUser);
         return List.of(baseService.sendMessage(botUser.getChatId(), message, replyKeyboard));
     }
 
@@ -251,9 +285,9 @@ public class StateServiceImpl implements StateService {
         String text = message.getText();
         if (Objects.equals(BotCommands.MAIN_MENU.getMessage(botUser.getLanguage()), text)) {
             return handleMainMenu(botUser);
-        } else if (Objects.equals(BotCommands.CHECK_ADDRESS_YES.getMessage(botUser.getLanguage()), text)) {
+        } else if (Objects.equals(BotCommands.CHECK_YES.getMessage(botUser.getLanguage()), text)) {
             return handleCheckAddressYes(botUser);
-        } else if (Objects.equals(BotCommands.CHECK_ADDRESS_NO.getMessage(botUser.getLanguage()), text)) {
+        } else if (Objects.equals(BotCommands.CHECK_NO.getMessage(botUser.getLanguage()), text)) {
             return List.of(baseService.sendMessage(botUser.getChatId(), BotMessages.ADD_ADDRESS.getMessage(botUser.getLanguage()), replyMarkupService.sendLocation(botUser)));
         } else {
             return handleTextAddress(botUser, message.getText());
@@ -264,7 +298,7 @@ public class StateServiceImpl implements StateService {
         botUser.setTemAddress(text);
         botUser = botUserService.saveTempAddress(botUser);
         String sendAddress = BotMessages.USER_ADDRESS.getMessageWPar(botUser.getLanguage(), botUser.getTemAddress());
-        ReplyKeyboard replyKeyboard = replyMarkupService.checkAddress(botUser);
+        ReplyKeyboard replyKeyboard = replyMarkupService.confirmData(botUser);
         return List.of(baseService.sendMessage(botUser.getChatId(), sendAddress, replyKeyboard));
     }
 

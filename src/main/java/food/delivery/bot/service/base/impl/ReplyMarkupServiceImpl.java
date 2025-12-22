@@ -179,15 +179,15 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
     }
 
     @Override
-    public ReplyKeyboard checkAddress(BotUser botUser) {
+    public ReplyKeyboard confirmData(BotUser botUser) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
                 List.of(
                         new KeyboardRow(List.of(
                                 KeyboardButton.builder()
-                                        .text(BotCommands.CHECK_ADDRESS_YES.getMessage(botUser.getLanguage()))
+                                        .text(BotCommands.CHECK_YES.getMessage(botUser.getLanguage()))
                                         .build(),
                                 KeyboardButton.builder()
-                                        .text(BotCommands.CHECK_ADDRESS_NO.getMessage(botUser.getLanguage()))
+                                        .text(BotCommands.CHECK_NO.getMessage(botUser.getLanguage()))
                                         .build()
                         ))
                 )
@@ -234,8 +234,7 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
                         .build()
         )));
 
-        String savedAddress = botUser.getAddress();
-        return buildKeyboardWithSavedValue(botUser, savedAddress, rows);
+        return buildKeyboardWithSavedValue(botUser, botUser.getAddress(), rows);
     }
 
     @Override
@@ -244,6 +243,11 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
 
         String savedFullName = botUser.getFullName();
         return buildKeyboardWithSavedValue(botUser, savedFullName, rows);
+    }
+
+    @Override
+    public ReplyKeyboard itemCategory(BotUser botUser) {
+        return null;
     }
 
     @NotNull

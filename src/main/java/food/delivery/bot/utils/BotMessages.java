@@ -54,7 +54,11 @@ public enum BotMessages {
     SEND_LOCATION_OR_CHOOSE_ADDRESS("Yetkazib berish uchun geo-lokatisiya yuboring yoki manzilni tanlang",
             "Отправить данные о местоположении или выбрать адрес доставки"),
 
-    ENTER_NAME("Ismingizni kiriting", "Введите ваше имя");
+    ENTER_NAME("Ismingizni kiriting yoki tanlang.", "Введите или выберите свое имя."),
+
+    ACCEPT_NAME("Ismingizni tasdiqlang \uD83D\uDE4E\uD83C\uDFFB\u200D♂️ {0Подтвердите свое имя \uD83D\uDE4E\uD83C\uDFFB\u200D♂️ {0}}", ""),
+
+    CHOOSE_CATEGORY_ITEM("Mahsulot kategoriyalardan birini tanlang", "Выберите одну из категорий товаров.");
 
 
     public String getMessage(Language language) {

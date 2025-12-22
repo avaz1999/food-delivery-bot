@@ -1,4 +1,4 @@
-package food.delivery.backend.dto;
+package food.delivery.backend.model.dto;
 
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.enums.Role;

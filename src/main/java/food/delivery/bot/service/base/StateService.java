@@ -29,4 +29,6 @@ public interface StateService {
     List<BotApiMethod<?>> handleOrderType(BotUser botUser, Message message);
 
     List<BotApiMethod<?>> handleChooseLocation(BotUser botUser, Message message);
+
+    List<BotApiMethod<?>> handleChooseName(BotUser botUser, Message message);
 }

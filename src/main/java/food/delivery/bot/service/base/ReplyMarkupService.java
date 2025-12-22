@@ -21,11 +21,13 @@ public interface ReplyMarkupService {
 
     ReplyKeyboard sendLocation(BotUser botUser);
 
-    ReplyKeyboard checkAddress(BotUser botUser);
+    ReplyKeyboard confirmData(BotUser botUser);
 
     ReplyKeyboard orderType(BotUser botUser);
 
     ReplyKeyboard sendLocationOrChooseAddress(BotUser botUser);
 
     ReplyKeyboard enterName(BotUser botUser);
+
+    ReplyKeyboard itemCategory(BotUser botUser);
 }

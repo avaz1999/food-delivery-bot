@@ -28,9 +28,9 @@ public enum BotCommands {
     SHARE_ADDRESS("\uD83D\uDCCD LOCATSIYA YUBORISH",
             "\uD83D\uDCCD ОТПРАВИТЬ МЕСТОПОЛОЖЕНИЕ"),
 
-    CHECK_ADDRESS_YES("✅ HA", "✅ ДА"),
+    CHECK_YES("✅ HA", "✅ ДА"),
 
-    CHECK_ADDRESS_NO("❌ YO'Q", "❌️ НЕТ"),
+    CHECK_NO("❌ YO'Q", "❌️ НЕТ"),
 
     ORDER_DELIVERY("\uD83D\uDE95 YETKAZIB BERISH",
             "\uD83D\uDE95 ДОСТАВКА"),
