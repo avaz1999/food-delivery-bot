@@ -1,14 +1,19 @@
 package food.delivery.backend.service;
 
 import food.delivery.backend.entity.Category;
+import food.delivery.backend.enums.FoodStatus;
+import food.delivery.backend.enums.Language;
 import food.delivery.backend.exception.BadRequestException;
 import food.delivery.backend.exception.ResponseCodes;
+import food.delivery.backend.model.dto.CategoryDTO;
 import food.delivery.backend.model.request.CategoryCreateRequest;
 import food.delivery.backend.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by Avaz Absamatov
@@ -43,4 +48,20 @@ public class CategoryService {
         return ResponseCodes.SUCCESS;
 
     }
+
+    public Long getParentId(Long parentId) {
+        return repository.findById(parentId)
+                .map(c -> c.getParent() == null ? null : c.getParent().getId()).orElse(null);
+    }
+
+    public List<CategoryDTO> getAllActiveCategory(Long categoryId, Language language) {
+        return repository.findAllByStatusAndParent_Id(FoodStatus.AVAILABLE, categoryId).stream()
+                .map(c -> toDTO(c, language)).toList();
+    }
+
+    private CategoryDTO toDTO(Category category, Language language) {
+        String name = language.equals(Language.UZ) ? category.getNameUz() : category.getNameRu();
+        return new CategoryDTO(category.getId(), name);
+    }
+
 }

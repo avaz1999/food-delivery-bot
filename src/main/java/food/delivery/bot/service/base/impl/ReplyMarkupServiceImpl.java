@@ -2,6 +2,8 @@ package food.delivery.bot.service.base.impl;
 
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
+import food.delivery.backend.model.dto.CategoryDTO;
+import food.delivery.backend.service.CategoryService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.utils.BotCommands;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReplyMarkupServiceImpl implements ReplyMarkupService {
+    private final CategoryService categoryService;
+
     @Override
     public InlineKeyboardMarkup mainMenu(BotUser user) {
         return InlineKeyboardMarkup.builder()
@@ -246,9 +250,70 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
     }
 
     @Override
-    public ReplyKeyboard itemCategory(BotUser botUser) {
-        return null;
+    public InlineKeyboardMarkup itemCategory(BotUser botUser, Long categoryId, boolean isOne) {
+
+        Long searchParentId;
+        boolean showBackButton;
+
+        if (categoryId == null) {
+            searchParentId = null;
+            showBackButton = false;
+        } else {
+            Long parentId;
+            if (!isOne) {
+                parentId = categoryService.getParentId(categoryId);
+            } else {
+                parentId = categoryId;
+            }
+            if (parentId != null) categoryId = parentId;
+            searchParentId = parentId == null ? null : categoryId;
+            showBackButton = parentId != null;
+        }
+
+        List<CategoryDTO> list =
+                categoryService.getAllActiveCategory(searchParentId, botUser.getLanguage());
+
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+        InlineKeyboardRow row = new InlineKeyboardRow();
+
+        int i = 0;
+        for (CategoryDTO dto : list) {
+            row.add(
+                    InlineKeyboardButton.builder()
+                            .text(dto.getName())
+                            .callbackData("CATEGORY#" + dto.getId())
+                            .build()
+            );
+            i++;
+            if (i % 2 == 0) {
+                rows.add(row);
+                row = new InlineKeyboardRow();
+            }
+        }
+        if (!row.isEmpty()) rows.add(row);
+
+        InlineKeyboardRow bottomRow = new InlineKeyboardRow();
+
+        if (showBackButton) {
+            bottomRow.add(
+                    InlineKeyboardButton.builder()
+                            .text(BotCommands.BACK.getMessage(botUser.getLanguage()))
+                            .callbackData(BotCommands.BACK.name() + "#" + categoryId)
+                            .build()
+            );
+        } else {
+            bottomRow.add(
+                    InlineKeyboardButton.builder()
+                            .text(BotCommands.MAIN_MENU.getMessage(botUser.getLanguage()))
+                            .callbackData(BotCommands.MAIN_MENU.name())
+                            .build()
+            );
+        }
+
+        rows.add(bottomRow);
+        return new InlineKeyboardMarkup(rows);
     }
+
 
     @NotNull
     private ReplyKeyboardMarkup buildKeyboardWithSavedValue(BotUser botUser, String savedValue, List<KeyboardRow> rows) {

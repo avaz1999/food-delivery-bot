@@ -1,9 +1,7 @@
 package food.delivery.backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import food.delivery.backend.enums.FoodStatus;
+import jakarta.persistence.*;
 import lombok.*;
 
 /**
@@ -30,6 +28,9 @@ public class Category extends GenericEntity {
 
     @Column(name = "description_ru")
     private String descriptionRu;
+
+    @Enumerated(EnumType.STRING)
+    private FoodStatus status;
 
     @ManyToOne
     private Category parent;

@@ -51,11 +51,9 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/sign-in").permitAll()
-                        .requestMatchers("/", "/actuator/health").permitAll()
+                        .requestMatchers("/api/sign-in", "/webhook").permitAll()
                         .requestMatchers(
-                                "/swagger-ui/**", "/swagger-ui.html",
-                                "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**"
+                                "/swagger-ui/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

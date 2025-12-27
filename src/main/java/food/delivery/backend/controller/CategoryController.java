@@ -6,6 +6,7 @@ import food.delivery.backend.model.response.GenericResponse;
 import food.delivery.backend.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ public class CategoryController {
 
 
     @PostMapping("create")
+    @PreAuthorize("hasAnyRole('DEVELOPER', 'ADMIN', 'KITCHEN_MANAGER')")
     public GenericResponse<ResponseCodes> create(@RequestBody CategoryCreateRequest request){
         return GenericResponse.of(service.create(request));
     }

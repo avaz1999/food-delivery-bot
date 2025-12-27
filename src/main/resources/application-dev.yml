@@ -29,7 +29,7 @@ telegram:
   bot:
     username: t.me/food_delivery_angren_bot
     token: 8499626969:AAGHMtUo3DtjO87qo4CIURF6COYb1ButLew
-    webhookPath: https://0d3144c067a8.ngrok-free.app
+    webhookPath: https://dd9a1e6dc228.ngrok-free.app
     botPath: webhook
     allowed-updates:
       - message

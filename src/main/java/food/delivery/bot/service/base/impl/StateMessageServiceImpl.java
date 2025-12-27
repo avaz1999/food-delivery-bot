@@ -6,9 +6,8 @@ import food.delivery.backend.enums.State;
 import food.delivery.backend.service.BotUserService;
 import food.delivery.backend.service.LocationService;
 import food.delivery.bot.service.base.BaseService;
-import food.delivery.bot.service.base.MenuService;
 import food.delivery.bot.service.base.ReplyMarkupService;
-import food.delivery.bot.service.base.StateService;
+import food.delivery.bot.service.base.StateMessageService;
 import food.delivery.bot.utils.BotCommands;
 import food.delivery.bot.utils.BotMessages;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.location.Location;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
@@ -33,8 +31,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-public class StateServiceImpl implements StateService {
-    private final MenuService menuService;
+public class StateMessageServiceImpl implements StateMessageService {
     private final BaseService baseService;
     private final BotUserService botUserService;
     private final ReplyMarkupService replyMarkupService;
@@ -44,18 +41,6 @@ public class StateServiceImpl implements StateService {
     public List<BotApiMethod<?>> handleStartMessage(BotUser botUser, String text) {
         botUserService.changeState(botUser, State.STATE_CHOOSE_LANG);
         return baseService.mainMenuMessage(botUser);
-    }
-
-    @Override
-    public List<BotApiMethod<?>> handleChooseLanguage(BotUser botUser, CallbackQuery callbackQuery) {
-        List<BotApiMethod<?>> result = processLanguage(botUser, callbackQuery);
-        botUserService.changeState(botUser, State.STATE_MAIN_MENU);
-        return result;
-    }
-
-    @Override
-    public List<BotApiMethod<?>> handleSettingChangeLang(BotUser botUser, CallbackQuery callbackQuery) {
-        return processLanguage(botUser, callbackQuery);
     }
 
     @Override
@@ -108,12 +93,17 @@ public class StateServiceImpl implements StateService {
         String text = message.getText();
 
         if (Objects.equals(BotCommands.CHECK_YES.getMessage(botUser.getLanguage()), text)) {
+            String successMessage = BotMessages.SUCCESS_ADD_ORDER.getMessage(botUser.getLanguage());
+            ReplyKeyboard removeReply = replyMarkupService.removeReplyKeyboard();
             String sendText = BotMessages.CHOOSE_CATEGORY_ITEM.getMessage(botUser.getLanguage());
-            ReplyKeyboard replyKeyboard = replyMarkupService.itemCategory(botUser);
+            ReplyKeyboard replyKeyboard = replyMarkupService.itemCategory(botUser, null, false);
             botUserService.changeState(botUser, State.CHOOSE_ITEM_CATEGORY);
-            return List.of(baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard));
+            return List.of(baseService.sendMessage(botUser.getChatId(), successMessage, removeReply),
+                    baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard));
         } else if (Objects.equals(BotCommands.CHECK_NO.getMessage(botUser.getLanguage()), text)) {
-
+            String sendText = BotMessages.SEND_LOCATION_OR_CHOOSE_ADDRESS.getMessage(botUser.getLanguage());
+            ReplyKeyboard replyKeyboard = replyMarkupService.sendLocation(botUser);
+            return List.of(baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard));
         }
         if (!text.startsWith("✅ ")) {
             String sendText = BotMessages.SEND_LOCATION_OR_CHOOSE_ADDRESS.getMessage(botUser.getLanguage());
@@ -121,8 +111,15 @@ public class StateServiceImpl implements StateService {
             SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard);
             DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), message.getMessageId());
             return List.of(deleteMessage, sendMessage);
+        } else {
+            String deleteMessageText = BotMessages.SUCCESS_ADD_ORDER.getMessage(botUser.getLanguage());
+            String sendText = BotMessages.ADD_ORDER.getMessage(botUser.getLanguage());
+            ReplyKeyboard replyKeyboard = replyMarkupService.itemCategory(botUser, null, false);
+            SendMessage deleteMessage = baseService.sendMessage(botUser.getChatId(), deleteMessageText, replyMarkupService.removeReplyKeyboard());
+            SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard);
+            botUserService.changeState(botUser, State.CHOOSE_ITEM_CATEGORY);
+            return List.of(deleteMessage, sendMessage);
         }
-        return List.of();
     }
 
     @Override
@@ -134,7 +131,10 @@ public class StateServiceImpl implements StateService {
         }
         String text = message.getText();
         if (Objects.equals(BotCommands.CHECK_YES.getMessage(botUser.getLanguage()), text)) {
-
+            String sendText = BotMessages.ADD_ORDER.getMessage(botUser.getLanguage());
+            ReplyKeyboard replyKeyboard = replyMarkupService.itemCategory(botUser, null, false);
+            SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard);
+            return List.of(sendMessage);
         }
         botUser.setFullName(text);
         String sendText = BotMessages.ACCEPT_NAME.getMessageWPar(botUser.getLanguage(), botUser.getFullName());
@@ -177,31 +177,6 @@ public class StateServiceImpl implements StateService {
         return List.of(sendMessage);
     }
 
-
-    @Override
-    public List<BotApiMethod<?>> handleMainMenu(BotUser botUser, CallbackQuery callbackQuery) {
-        String data = callbackQuery.getData();
-        return switch (data) {
-            case "MENU_START_ORDER" -> menuService.addOrder(botUser, callbackQuery);
-            case "MENU_ABOUT_US" -> menuService.aboutUs(botUser, callbackQuery);
-            case "MENU_MY_ORDER" -> menuService.myOrders(botUser, callbackQuery);
-            case "MENU_COMMENT" -> menuService.comment(botUser, callbackQuery);
-            case "MENU_SETTINGS" -> menuService.settingMenu(botUser, callbackQuery);
-            default -> throw new IllegalStateException("Unexpected value: " + data);
-        };
-    }
-
-    @Override
-    public List<BotApiMethod<?>> handleSettingMenu(BotUser botUser, CallbackQuery callbackQuery) {
-        String data = callbackQuery.getData();
-        return switch (data) {
-            case "SETTINGS_MENU_CHANGE_LANG" -> menuService.settingChangeLangMenu(botUser, callbackQuery);
-            case "SETTINGS_MENU_CHANGE_PHONE" -> menuService.settingChangePhoneMenu(botUser, callbackQuery);
-            case "SETTINGS_MENU_CHANGE_ADDRESS" -> menuService.settingChangeAddressMenu(botUser, callbackQuery);
-            case "MAIN_MENU" -> menuService.mainMenu(botUser, callbackQuery);
-            default -> throw new IllegalStateException("Unexpected value: " + data);
-        };
-    }
 
     private List<BotApiMethod<?>> processContact(BotUser botUser, Contact contact, Integer messageId) {
         Long userId = contact.getUserId();
@@ -325,33 +300,6 @@ public class StateServiceImpl implements StateService {
         return result;
     }
 
-    @NotNull
-    private List<BotApiMethod<?>> processLanguage(BotUser botUser, CallbackQuery callbackQuery) {
-        String data = callbackQuery.getData();
-        Integer messageId = callbackQuery.getMessage().getMessageId();
-        Language language;
-        List<BotApiMethod<?>> result = new ArrayList<>();
-
-        if (Objects.equals(data, BotCommands.BACK.name())) {
-            BotApiMethod<?> editMessage = baseService.processSettingLanguage(botUser, messageId, baseService, replyMarkupService);
-            result.add(editMessage);
-            botUserService.changeState(botUser, State.STATE_SETTING_MENU);
-            return result;
-        }
-        if (Objects.equals(data, Language.UZ.name()))
-            language = botUserService.saveLanguage(botUser, Language.UZ);
-
-        else language = botUserService.saveLanguage(botUser, Language.RU);
-
-        botUser.setLanguage(language);
-        List<BotApiMethod<?>> res = baseService.mainMenuMessage(botUser);
-        result.addAll(res);
-        result.removeFirst();
-        botUserService.changeState(botUser, State.STATE_MAIN_MENU);
-        DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
-        result.add(deleteMessage);
-        return result;
-    }
 
     public static String extractAndValidatePhone(String text) {
         if (text == null || text.trim().isEmpty()) return null;

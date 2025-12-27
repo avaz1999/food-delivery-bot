@@ -5,7 +5,7 @@ import food.delivery.backend.enums.State;
 import food.delivery.backend.service.BotUserService;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.ReplyMarkupService;
-import food.delivery.bot.service.base.StateService;
+import food.delivery.bot.service.base.StateMessageService;
 import food.delivery.bot.service.message.ClientMessageService;
 import food.delivery.bot.utils.BotMessages;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import static food.delivery.backend.enums.State.STATE_START;
 @RequiredArgsConstructor
 public class ClientMessageServiceImpl implements ClientMessageService {
     private final BaseService baseService;
-    private final StateService stateService;
+    private final StateMessageService stateMessageService;
     private final ReplyMarkupService replyMarkupService;
     private final BotUserService botUserService;
 
@@ -36,13 +36,13 @@ public class ClientMessageServiceImpl implements ClientMessageService {
         List<BotApiMethod<?>> result = handleStartMessage(botUser, text);
         if (!result.isEmpty()) return result;
         return switch (botUser.getState()) {
-            case STATE_START -> stateService.handleStartMessage(botUser, text);
-            case STATE_SETTING_PHONE_NUMBER -> stateService.handleSettingPhoneNumber(botUser, message);
-            case STATE_SETTING_ADDRESS -> stateService.handleSettingLocation(botUser, message);
+            case STATE_START -> stateMessageService.handleStartMessage(botUser, text);
+            case STATE_SETTING_PHONE_NUMBER -> stateMessageService.handleSettingPhoneNumber(botUser, message);
+            case STATE_SETTING_ADDRESS -> stateMessageService.handleSettingLocation(botUser, message);
 
-            case STATE_CHOOSE_ORDER_TYPE -> stateService.handleOrderType(botUser, message);
-            case STATE_CHOOSE_LOCATION -> stateService.handleChooseLocation(botUser, message);
-            case STATE_ENTER_NAME -> stateService.handleChooseName(botUser, message);
+            case STATE_CHOOSE_ORDER_TYPE -> stateMessageService.handleOrderType(botUser, message);
+            case STATE_CHOOSE_LOCATION -> stateMessageService.handleChooseLocation(botUser, message);
+            case STATE_ENTER_NAME -> stateMessageService.handleChooseName(botUser, message);
             default -> List.of(baseService.deleteMessage(botUser.getChatId(), message.getMessageId()));
         };
     }

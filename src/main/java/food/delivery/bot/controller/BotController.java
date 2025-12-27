@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
@@ -26,8 +27,8 @@ public class BotController {
     private final CallbackQueryService callbackQueryService;
     private final OkHttpTelegramClient telegramClient;
 
-    @PostMapping("/")
-    public ResponseEntity<String> handle(Update update) {
+    @PostMapping("/webhook")
+    public ResponseEntity<String> handle(@RequestBody Update update) {
         List<BotApiMethod<?>> methodsToSend = new ArrayList<>();
         if (update.hasMessage()) {
             List<BotApiMethod<?>> res = messageService.messageHandler(update.getMessage());

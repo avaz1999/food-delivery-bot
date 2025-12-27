@@ -2,7 +2,7 @@ package food.delivery.bot.service.callback.impl;
 
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.State;
-import food.delivery.bot.service.base.StateService;
+import food.delivery.bot.service.base.StateCallbackQueryService;
 import food.delivery.bot.service.callback.ClientCallbackQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ClientCallbackQueryServiceImpl implements ClientCallbackQueryService {
-    private final StateService stateService;
+    private final StateCallbackQueryService stateService;
 
     @Override
     public List<BotApiMethod<?>> handleClientState(CallbackQuery callbackQuery, BotUser botUser) {
@@ -28,6 +28,7 @@ public class ClientCallbackQueryServiceImpl implements ClientCallbackQueryServic
             case STATE_MAIN_MENU -> stateService.handleMainMenu(botUser, callbackQuery);
             case STATE_SETTING_MENU -> stateService.handleSettingMenu(botUser, callbackQuery);
             case STATE_SETTING_CHOOSE_LANG -> stateService.handleSettingChangeLang(botUser, callbackQuery);
+            case CHOOSE_ITEM_CATEGORY -> stateService.handleChooseOrderType(botUser, callbackQuery);
             default -> throw new IllegalStateException("Unexpected value: " + currentState);
         };
     }

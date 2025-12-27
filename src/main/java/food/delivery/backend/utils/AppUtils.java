@@ -17,7 +17,7 @@ public class AppUtils {
                 path.startsWith("/v3/api-docs") ||
                 path.startsWith("/webjars") ||
                 path.equals("/api/sign-in") ||
-                path.startsWith("/actuator");
+                path.startsWith("/webhook");
     }
 
     public String cleanPath(HttpServletRequest request) {

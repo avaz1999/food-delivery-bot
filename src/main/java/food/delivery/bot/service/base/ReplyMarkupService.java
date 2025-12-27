@@ -29,5 +29,6 @@ public interface ReplyMarkupService {
 
     ReplyKeyboard enterName(BotUser botUser);
 
-    ReplyKeyboard itemCategory(BotUser botUser);
+    InlineKeyboardMarkup itemCategory(BotUser botUser, Long categoryId, boolean isOne);
+
 }
