@@ -60,7 +60,10 @@ public enum BotMessages {
 
     CHOOSE_CATEGORY_ITEM("Mahsulot kategoriyalardan birini tanlang", "Выберите одну из категорий товаров."),
 
-    SUCCESS_ADD_ORDER("\uD83D\uDE00 Siz bilan buyurtma tanlaymiz.", "\uD83D\uDE00 Мы вместе с вами выберем заказ.");
+    SUCCESS_ADD_ORDER("\uD83D\uDE00 Siz bilan buyurtma tanlaymiz.", "\uD83D\uDE00 Мы вместе с вами выберем заказ."),
+
+    CHOOSE_ITEM("<b>{0}</b>\n<b>Narxi: </b>{1}\n<b>Tavsif: </b>{2}\n<b>Miqdorini tanlang </b>",
+            "<b>{0}</b>\n<b>Цена: </b>{1}\n<b>Описание: </b>{2}\n<b>Выберите количество</b>");
 
     public String getMessage(Language language) {
         if (language.equals(Language.UZ)) return uz;

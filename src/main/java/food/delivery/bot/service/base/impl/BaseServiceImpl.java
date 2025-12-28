@@ -1,6 +1,7 @@
 package food.delivery.bot.service.base.impl;
 
 import food.delivery.backend.entity.BotUser;
+import food.delivery.backend.model.dto.ItemDTO;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.utils.BotMessages;
@@ -8,12 +9,18 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import static food.delivery.bot.utils.BotMessages.ADD_ORDER;
@@ -48,6 +55,17 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
+    public SendPhoto sendPhoto(Long chatId, String sendText, ItemDTO item) {
+        InputStream imageStream = new ByteArrayInputStream(item.getImage());
+        return SendPhoto.builder()
+                .chatId(chatId.toString())
+                .caption(sendText)
+                .parseMode("HTML")
+                .photo(new InputFile(imageStream, "item.jpg"))
+                .build();
+    }
+
+    @Override
     public EditMessageText editMessageText(Long chatId, String text, Integer messageId, InlineKeyboardMarkup replyKeyboard) {
         return EditMessageText.builder()
                 .chatId(chatId.toString())
@@ -58,8 +76,19 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
+    public EditMessageCaption editMessageCaption(Long chatId, String caption, Integer messageId, InlineKeyboardMarkup replyKeyboard) {
+        return EditMessageCaption.builder()
+                .chatId(chatId)
+                .messageId(messageId)
+                .caption(caption)
+                .parseMode("HTML")
+                .replyMarkup(replyKeyboard)
+                .build();
+    }
+
+    @Override
     @NotNull
-    public List<BotApiMethod<?>> mainMenuMessage(BotUser botUser) {
+    public List<PartialBotApiMethod<?>> mainMenuMessage(BotUser botUser) {
         String addOrderQuestion = ADD_ORDER_QUESTION.getMessage(botUser.getLanguage());
         String addOrder = ADD_ORDER.getMessage(botUser.getLanguage());
         return List.of(
@@ -69,7 +98,7 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public  BotApiMethod<?> processSettingLanguage(BotUser botUser, Integer messageId, BaseService baseService, ReplyMarkupService replyMarkupService) {
+    public BotApiMethod<?> processSettingLanguage(BotUser botUser, Integer messageId, BaseService baseService, ReplyMarkupService replyMarkupService) {
         String language = botUser.getLanguage().name();
         String phone = botUser.getPhone() == null ? "" : botUser.getPhone();
         String address = botUser.getAddress() == null ? "" : botUser.getAddress();
@@ -80,10 +109,11 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public List<BotApiMethod<?>> deleteAndSendMessageSender(BotUser botUser, Integer messageId, String message, ReplyKeyboard reply) {
+    public List<PartialBotApiMethod<?>> deleteAndSendMessageSender(BotUser botUser, Integer messageId, String message, ReplyKeyboard reply) {
         DeleteMessage deleteMessage = deleteMessage(botUser.getChatId(), messageId);
         SendMessage sendMessage = sendMessage(botUser.getChatId(),
                 message, reply);
         return List.of(deleteMessage, sendMessage);
     }
+
 }

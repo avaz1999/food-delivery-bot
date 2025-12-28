@@ -35,7 +35,13 @@ public enum BotCommands {
     ORDER_DELIVERY("\uD83D\uDE95 YETKAZIB BERISH",
             "\uD83D\uDE95 ДОСТАВКА"),
 
-    ORDER_PICKUP("\uD83D\uDEB6 OLIB KETISH","\uD83D\uDEB6 САМОВЫВОЗ");
+    ORDER_PICKUP("\uD83D\uDEB6 OLIB KETISH","\uD83D\uDEB6 САМОВЫВОЗ"),
+
+    PLUS("➕", "➕"),
+
+    MINUS("➖", "➖"),
+
+    CART("\uD83D\uDED2 Savatga qo'shish", "\uD83D\uDED2 Добавить в корзину");
     private final String uz;
     private final String ru;
 

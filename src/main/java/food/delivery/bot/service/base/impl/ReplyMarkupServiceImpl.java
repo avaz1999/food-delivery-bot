@@ -3,6 +3,7 @@ package food.delivery.bot.service.base.impl;
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.model.dto.CategoryDTO;
+import food.delivery.backend.model.dto.ItemDTO;
 import food.delivery.backend.service.CategoryService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.utils.BotCommands;
@@ -311,6 +312,43 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
         }
 
         rows.add(bottomRow);
+        return new InlineKeyboardMarkup(rows);
+    }
+
+    @Override
+    public InlineKeyboardMarkup oneItemReply(BotUser botUser, Long categoryId, int count) {
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+        InlineKeyboardRow row = new InlineKeyboardRow();
+        InlineKeyboardRow back = new InlineKeyboardRow();
+        InlineKeyboardRow cart = new InlineKeyboardRow();
+
+
+        row.add(InlineKeyboardButton.builder()
+                .text(BotCommands.MINUS.getMessage(botUser.getLanguage()))
+                .callbackData(BotCommands.MINUS.name() + "#" + categoryId + "#" + count)
+                .build());
+        row.add(InlineKeyboardButton.builder()
+                .text(String.valueOf(count))
+                .callbackData(count + "#" + categoryId)
+                .build());
+        row.add(InlineKeyboardButton.builder()
+                .text(BotCommands.PLUS.getMessage(botUser.getLanguage()))
+                .callbackData(BotCommands.PLUS.name() + "#" + categoryId + "#" + count)
+                .build());
+
+        back.add(InlineKeyboardButton.builder()
+                .text(BotCommands.BACK.getMessage(botUser.getLanguage()))
+                .callbackData(BotCommands.BACK.name() + "#" + categoryId)
+                .build());
+
+        cart.add(InlineKeyboardButton.builder()
+                .text(BotCommands.CART.getMessage(botUser.getLanguage()))
+                .callbackData(BotCommands.BACK.name() + "#" + categoryId)
+                .build());
+        rows.add(row);
+        rows.add(back);
+        rows.add(cart);
+
         return new InlineKeyboardMarkup(rows);
     }
 

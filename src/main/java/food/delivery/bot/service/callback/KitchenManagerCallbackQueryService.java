@@ -1,6 +1,6 @@
 package food.delivery.bot.service.callback;
 
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
@@ -10,6 +10,6 @@ import java.util.List;
  * Date: 12/6/2025
  */
 public interface KitchenManagerCallbackQueryService {
-    List<BotApiMethod<?>> handleKitchenManagerState(CallbackQuery callbackQuery);
+    List<PartialBotApiMethod<?>> handleKitchenManagerState(CallbackQuery callbackQuery);
 
 }

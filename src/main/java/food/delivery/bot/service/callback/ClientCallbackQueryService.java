@@ -1,7 +1,7 @@
 package food.delivery.bot.service.callback;
 
 import food.delivery.backend.entity.BotUser;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
@@ -11,6 +11,6 @@ import java.util.List;
  * Date: 12/6/2025
  */
 public interface ClientCallbackQueryService {
-    List<BotApiMethod<?>> handleClientState(CallbackQuery callbackQuery, BotUser botUser);
+    List<PartialBotApiMethod<?>> handleClientState(CallbackQuery callbackQuery, BotUser botUser);
 
 }

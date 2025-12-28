@@ -2,7 +2,7 @@ package food.delivery.bot.service.message.impl;
 
 import food.delivery.bot.service.message.KitchenManagerMessageService;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class KitchenManagerMessageServiceImpl implements KitchenManagerMessageService {
     @Override
-    public List<BotApiMethod<?>> handleKitchenManagerState(Message message) {
+    public List<PartialBotApiMethod<?>> handleKitchenManagerState(Message message) {
         return null;
     }
 }

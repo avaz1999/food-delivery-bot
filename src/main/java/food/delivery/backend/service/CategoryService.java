@@ -64,4 +64,7 @@ public class CategoryService {
         return new CategoryDTO(category.getId(), name);
     }
 
+    public Category findOne(Long categoryId) {
+        return repository.findById(categoryId).orElse(null);
+    }
 }

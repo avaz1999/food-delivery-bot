@@ -2,7 +2,6 @@ package food.delivery.backend.entity;
 
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.enums.Role;
-import food.delivery.backend.enums.State;
 import food.delivery.backend.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,8 +42,7 @@ public class BotUser extends GenericEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
-    @Enumerated(EnumType.STRING)
-    private State state = State.STATE_START;
+    private String state;
 
     @Enumerated(EnumType.STRING)
     private Language language = Language.UZ;

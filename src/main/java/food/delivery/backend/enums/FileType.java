@@ -7,5 +7,4 @@ package food.delivery.backend.enums;
 
 public enum FileType {
     IMAGE, STICKER
-
 }

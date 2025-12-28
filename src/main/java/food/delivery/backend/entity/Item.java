@@ -1,10 +1,8 @@
 package food.delivery.backend.entity;
 
+import food.delivery.backend.enums.FoodStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -15,13 +13,13 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "items", indexes = {
         @Index(name = "idx_name_uz", columnList = "name_uz"),
-        @Index(name = "idx_category_id", columnList = "category_id"),
-        @Index(name = "idx_active", columnList = "active")
+        @Index(name = "idx_category_id", columnList = "category_id")
 })
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Item extends GenericEntity {
     @Column(name = "name_uz")
     private String nameUz;
@@ -38,8 +36,11 @@ public class Item extends GenericEntity {
     @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "active")
-    private Boolean active;
+    @Column(name = "discount_price", precision = 10, scale = 2)
+    private BigDecimal discountPrice;
+
+    @Enumerated(EnumType.STRING)
+    private FoodStatus status;
 
     @OneToOne
     private FileItem image;

@@ -10,7 +10,6 @@ import org.springframework.web.servlet.HandlerMapping;
  */
 @UtilityClass
 public class AppUtils {
-    public static final String BASE_URL_V1 = "/v1/api/";
 
     public boolean isPublicEndpoint(String path) {
         return path.startsWith("/swagger-ui") ||

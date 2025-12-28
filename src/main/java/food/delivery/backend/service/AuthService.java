@@ -1,4 +1,4 @@
-package food.delivery.backend.service.impl;
+package food.delivery.backend.service;
 
 
 import food.delivery.backend.entity.User;

@@ -8,7 +8,7 @@ import food.delivery.bot.service.message.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class MessageHandlerServiceImpl implements MessageHandlerService {
     private final BaseService baseService;
 
     @Override
-    public List<BotApiMethod<?>> messageHandler(Message message) {
+    public List<PartialBotApiMethod<?>> messageHandler(Message message) {
         try {
             BotUser botUser = botUserService.getOrRegisterUser(message);
             return switch (botUser.getRole()) {

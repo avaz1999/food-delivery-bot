@@ -1,6 +1,6 @@
 package food.delivery.bot.service.message;
 
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 import java.util.List;
@@ -10,5 +10,5 @@ import java.util.List;
  * Date: 12/2/2025
  */
 public interface DeveloperMessageService {
-    List<BotApiMethod<?>> handleDeveloperState(Message message);
+    List<PartialBotApiMethod<?>> handleDeveloperState(Message message);
 }

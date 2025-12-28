@@ -3,7 +3,7 @@ package food.delivery.bot.service.callback.impl;
 import food.delivery.bot.service.callback.KitchenManagerCallbackQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class KitchenManagerCallbackQueryServiceImpl implements KitchenManagerCallbackQueryService {
     @Override
-    public List<BotApiMethod<?>> handleKitchenManagerState(CallbackQuery callbackQuery) {
+    public List<PartialBotApiMethod<?>> handleKitchenManagerState(CallbackQuery callbackQuery) {
         return List.of();
     }
 }

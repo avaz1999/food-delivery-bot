@@ -3,7 +3,7 @@ package food.delivery.bot.service.callback.impl;
 import food.delivery.bot.service.callback.DeveloperCallbackQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeveloperCallbackQueryServiceImpl implements DeveloperCallbackQueryService {
     @Override
-    public List<BotApiMethod<?>> handleDeveloperState(CallbackQuery callbackQuery) {
+    public List<PartialBotApiMethod<?>> handleDeveloperState(CallbackQuery callbackQuery) {
         return List.of();
     }
 }

@@ -27,7 +27,14 @@ public enum ResponseCodes {
     FORBIDDEN(-20, "forbidden"),
     UNAUTHORIZED(-21, "unauthorized"),
     INVALID_TOKEN(-22, "invalid.token"),
-    FAIL(-23, "fail"), USER_NOT_FOUND(-24, "user.not.found");
+    FAIL(-23, "fail"),
+    USER_NOT_FOUND(-24, "user.not.found"),
+
+    //Item
+
+    ITEM_ALREADY_EXISTS(-25, "item.already.exists"),
+    CATEGORY_NOT_FOUND(-26, "category.not.found"),
+    IMAGE_CANNOT_BE_NULL(-27, "image.cannot.be.null");
     private final Integer code; // response code
     private final String message;
 }

@@ -31,4 +31,5 @@ public interface ReplyMarkupService {
 
     InlineKeyboardMarkup itemCategory(BotUser botUser, Long categoryId, boolean isOne);
 
+    InlineKeyboardMarkup oneItemReply(BotUser botUser, Long categoryId, int count);
 }

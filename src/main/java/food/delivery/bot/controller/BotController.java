@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
@@ -29,17 +33,25 @@ public class BotController {
 
     @PostMapping("/webhook")
     public ResponseEntity<String> handle(@RequestBody Update update) {
-        List<BotApiMethod<?>> methodsToSend = new ArrayList<>();
+        List<PartialBotApiMethod<?>> methodsToSend = new ArrayList<>();
         if (update.hasMessage()) {
-            List<BotApiMethod<?>> res = messageService.messageHandler(update.getMessage());
+            List<PartialBotApiMethod<?>> res = messageService.messageHandler(update.getMessage());
             methodsToSend.addAll(res);
         } else if (update.hasCallbackQuery()) {
-            List<BotApiMethod<?>> c = callbackQueryService.callbackHandler(update.getCallbackQuery());
+            List<PartialBotApiMethod<?>> c = callbackQueryService.callbackHandler(update.getCallbackQuery());
             if (c != null) methodsToSend.addAll(c);
         }
-        for (BotApiMethod<?> method : methodsToSend) {
+        for (PartialBotApiMethod<?> method : methodsToSend) {
             try {
-                telegramClient.execute(method);
+                if (method instanceof SendMessage m) {
+                    telegramClient.execute(m);
+                } else if (method instanceof EditMessageText m) {
+                    telegramClient.execute(m);
+                } else if (method instanceof DeleteMessage m) {
+                    telegramClient.execute(m);
+                } else if (method instanceof SendPhoto m) {
+                    telegramClient.execute(m);
+                }
             } catch (Exception e) {
                 log.error("Failed to send METHOD={}, MESSAGE={}", method, e.getMessage());
             }

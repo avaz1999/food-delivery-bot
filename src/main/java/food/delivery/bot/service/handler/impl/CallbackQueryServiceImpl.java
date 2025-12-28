@@ -8,7 +8,7 @@ import food.delivery.bot.service.handler.CallbackQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
@@ -31,7 +31,7 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
     private final BaseService baseService;
 
     @Override
-    public List<BotApiMethod<?>> callbackHandler(CallbackQuery callbackQuery) {
+    public List<PartialBotApiMethod<?>> callbackHandler(CallbackQuery callbackQuery) {
         try {
             BotUser botUser = botUserService.getOrRegisterUser((Message) callbackQuery.getMessage());
             return switch (botUser.getRole()) {

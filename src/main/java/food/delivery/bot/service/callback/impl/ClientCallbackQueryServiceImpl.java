@@ -6,7 +6,7 @@ import food.delivery.bot.service.base.StateCallbackQueryService;
 import food.delivery.bot.service.callback.ClientCallbackQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
@@ -21,14 +21,15 @@ public class ClientCallbackQueryServiceImpl implements ClientCallbackQueryServic
     private final StateCallbackQueryService stateService;
 
     @Override
-    public List<BotApiMethod<?>> handleClientState(CallbackQuery callbackQuery, BotUser botUser) {
-        State currentState = botUser.getState();
+    public List<PartialBotApiMethod<?>> handleClientState(CallbackQuery callbackQuery, BotUser botUser) {
+        State currentState = State.valueOf(botUser.getState());
         return switch (currentState) {
             case STATE_CHOOSE_LANG -> stateService.handleChooseLanguage(botUser, callbackQuery);
             case STATE_MAIN_MENU -> stateService.handleMainMenu(botUser, callbackQuery);
             case STATE_SETTING_MENU -> stateService.handleSettingMenu(botUser, callbackQuery);
             case STATE_SETTING_CHOOSE_LANG -> stateService.handleSettingChangeLang(botUser, callbackQuery);
             case CHOOSE_ITEM_CATEGORY -> stateService.handleChooseOrderType(botUser, callbackQuery);
+            case CHOOSE_ITEM -> stateService.handleChooseItem(botUser, callbackQuery);
             default -> throw new IllegalStateException("Unexpected value: " + currentState);
         };
     }
