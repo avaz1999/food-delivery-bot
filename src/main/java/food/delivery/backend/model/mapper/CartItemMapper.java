@@ -1,0 +1,39 @@
+package food.delivery.backend.model.mapper;
+
+import food.delivery.backend.entity.CartItem;
+import food.delivery.backend.model.dto.CartItemDTO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Avaz Absamatov
+ * Date: 1/6/2026
+ */
+@Component
+@RequiredArgsConstructor
+public class CartItemMapper {
+    public List<CartItemDTO> toDTOList(List<CartItem> list) {
+        if (list == null || list.isEmpty())
+            return new ArrayList<>();
+
+        return list.stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    public CartItemDTO toDTO(CartItem e) {
+
+        if (e == null) return null;
+
+        return CartItemDTO.builder()
+                .itemName(e.getItemName())
+                .price(e.getPrice())
+                .quantity(e.getQuantity())
+                .totalPrice(e.getTotalPrice())
+                .build();
+    }
+
+}

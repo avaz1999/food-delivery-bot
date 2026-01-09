@@ -3,7 +3,6 @@ package food.delivery.bot.service.base.impl;
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.model.dto.CategoryDTO;
-import food.delivery.backend.model.dto.ItemDTO;
 import food.delivery.backend.service.CategoryService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.utils.BotCommands;
@@ -316,24 +315,25 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
     }
 
     @Override
-    public InlineKeyboardMarkup oneItemReply(BotUser botUser, Long categoryId, int count) {
+    public InlineKeyboardMarkup oneItemReply(BotUser botUser, Long categoryId, int count, Long itemId) {
         List<InlineKeyboardRow> rows = new ArrayList<>();
         InlineKeyboardRow row = new InlineKeyboardRow();
         InlineKeyboardRow back = new InlineKeyboardRow();
         InlineKeyboardRow cart = new InlineKeyboardRow();
 
-
         row.add(InlineKeyboardButton.builder()
                 .text(BotCommands.MINUS.getMessage(botUser.getLanguage()))
-                .callbackData(BotCommands.MINUS.name() + "#" + categoryId + "#" + count)
+                .callbackData(BotCommands.MINUS.name() + "#" + categoryId + "#" + count + "#" + itemId)
                 .build());
+
         row.add(InlineKeyboardButton.builder()
                 .text(String.valueOf(count))
-                .callbackData(count + "#" + categoryId)
+                .callbackData(BotCommands.IGNORE.name())
                 .build());
+
         row.add(InlineKeyboardButton.builder()
                 .text(BotCommands.PLUS.getMessage(botUser.getLanguage()))
-                .callbackData(BotCommands.PLUS.name() + "#" + categoryId + "#" + count)
+                .callbackData(BotCommands.PLUS.name() + "#" + categoryId + "#" + count + "#" + itemId)
                 .build());
 
         back.add(InlineKeyboardButton.builder()
@@ -343,7 +343,7 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
 
         cart.add(InlineKeyboardButton.builder()
                 .text(BotCommands.CART.getMessage(botUser.getLanguage()))
-                .callbackData(BotCommands.BACK.name() + "#" + categoryId)
+                .callbackData(BotCommands.CART.name() + "#" + categoryId + "#" + count + "#" + itemId)
                 .build());
         rows.add(row);
         rows.add(back);

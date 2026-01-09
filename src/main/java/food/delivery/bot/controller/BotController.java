@@ -13,6 +13,8 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMet
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -50,6 +52,10 @@ public class BotController {
                 } else if (method instanceof DeleteMessage m) {
                     telegramClient.execute(m);
                 } else if (method instanceof SendPhoto m) {
+                    telegramClient.execute(m);
+                } else if (method instanceof EditMessageReplyMarkup m) {
+                    telegramClient.execute(m);
+                } else if (method instanceof EditMessageCaption m) {
                     telegramClient.execute(m);
                 }
             } catch (Exception e) {

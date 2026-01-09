@@ -41,7 +41,9 @@ public enum BotCommands {
 
     MINUS("➖", "➖"),
 
-    CART("\uD83D\uDED2 Savatga qo'shish", "\uD83D\uDED2 Добавить в корзину");
+    CART("\uD83D\uDED2 Savatga qo'shish", "\uD83D\uDED2 Добавить в корзину"),
+
+    IGNORE("IGNORE", "IGNORE");
     private final String uz;
     private final String ru;
 

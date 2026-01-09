@@ -2,6 +2,10 @@ package food.delivery.backend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import food.delivery.backend.entity.Location;
+import food.delivery.backend.model.dto.LocationDTO;
+import food.delivery.backend.repository.LocationRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,10 +23,21 @@ import java.net.http.HttpResponse;
 @Service
 @RequiredArgsConstructor
 public class LocationService {
+    private final LocationRepository repository;
     private final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
     private final ObjectMapper mapper = new ObjectMapper();
+
+    @Transactional
+    public void saveUserLocation(Double latitude, Double longitude, String displayName) {
+        Location location = Location.builder()
+                .displayName(displayName)
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
+        repository.save(location);
+    }
 
     public String getAddressByLongitudeAndLatitude(double latitude, double longitude) {
 
@@ -84,5 +99,13 @@ public class LocationService {
             log.warn("HTTP failed: {}", e.getMessage());
             return null;
         }
+    }
+
+    public LocationDTO getLocationByBotUser(Long createdBy) {
+        return repository.findByCreatedBy(createdBy).map(this::buildLocationDTO).orElse(null);
+    }
+
+    private LocationDTO buildLocationDTO(Location location) {
+        return new LocationDTO(location.getLatitude(), location.getLongitude());
     }
 }

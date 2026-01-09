@@ -33,5 +33,5 @@ public interface BaseService {
     List<PartialBotApiMethod<?>> deleteAndSendMessageSender(BotUser botUser, Integer messageId, String message, ReplyKeyboard reply);
 
 
-    SendPhoto sendPhoto(Long chatId, String sendText, ItemDTO item);
+    SendPhoto sendPhoto(Long chatId, String sendText, byte[] itemImage);
 }

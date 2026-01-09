@@ -69,12 +69,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     .username(username)
                     .build();
 
-            // ROLE_ prefiksi bilan authority yaratish
             var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
             var authentication = new UsernamePasswordAuthenticationToken(
                     principal,
-                    token,  // credentials sifatida tokenni qo‘yamiz
+                    token,
                     authorities
             );
 

@@ -258,6 +258,9 @@ public class StateMessageServiceImpl implements StateMessageService {
         botUser.setTemAddress(address);
         botUser = botUserService.saveTempAddress(botUser);
 
+        //Save user location
+        locationService.saveUserLocation(latitude, longitude, address);
+
         String message = BotMessages.USER_ADDRESS.getMessageWPar(botUser.getLanguage(), address);
         ReplyKeyboard replyKeyboard = replyMarkupService.confirmData(botUser);
         return List.of(baseService.sendMessage(botUser.getChatId(), message, replyKeyboard));

@@ -55,8 +55,8 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public SendPhoto sendPhoto(Long chatId, String sendText, ItemDTO item) {
-        InputStream imageStream = new ByteArrayInputStream(item.getImage());
+    public SendPhoto sendPhoto(Long chatId, String sendText, byte[] itemImage) {
+        InputStream imageStream = new ByteArrayInputStream(itemImage);
         return SendPhoto.builder()
                 .chatId(chatId.toString())
                 .caption(sendText)

@@ -71,6 +71,12 @@ public class ItemService {
         return buildDTO(item, language);
     }
 
+    public ItemDTO getItemById(Long itemId, Language language) {
+        Item item = repository.findByIdAndStatus(itemId, FoodStatus.AVAILABLE);
+        if (item == null) return null;
+        return buildDTO(item, language);
+    }
+
     private ItemDTO buildDTO(Item item, Language language) {
         boolean isUzbek = Objects.equals(Language.UZ, language);
         return ItemDTO.builder()

@@ -14,4 +14,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     boolean existsByNameRu(String nameUz);
 
     Item findByCategory_IdAndStatus(Long categoryId, FoodStatus status);
+
+    Item findByIdAndStatus(Long itemId, FoodStatus foodStatus);
 }
