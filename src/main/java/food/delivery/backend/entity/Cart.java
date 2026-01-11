@@ -54,6 +54,12 @@ public class Cart implements Serializable {
     @JoinColumn(name = "unified_tariff_id")
     private UnifiedTariff unifiedTariff;
 
+    @Column(name = "delivery_price")
+    private BigDecimal deliveryPrice;
+
+    @Column(name = "service_price")
+    private BigDecimal servicePrice;
+
     @Column(nullable = false)
     private BigDecimal totalPrice = BigDecimal.ZERO;
 

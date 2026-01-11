@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -20,6 +21,7 @@ public class CartItemMapper {
             return new ArrayList<>();
 
         return list.stream()
+                .sorted(Comparator.comparing(CartItem::getItemName))
                 .map(this::toDTO)
                 .toList();
     }
@@ -29,6 +31,7 @@ public class CartItemMapper {
         if (e == null) return null;
 
         return CartItemDTO.builder()
+                .id(e.getId())
                 .itemName(e.getItemName())
                 .price(e.getPrice())
                 .quantity(e.getQuantity())

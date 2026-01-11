@@ -7,6 +7,7 @@ import food.delivery.backend.model.dto.CartDTO;
 import food.delivery.backend.model.dto.ItemDTO;
 import food.delivery.backend.service.BotUserService;
 import food.delivery.backend.service.CartItemService;
+import food.delivery.backend.service.CartService;
 import food.delivery.backend.service.ItemService;
 import food.delivery.bot.service.base.*;
 import food.delivery.bot.utils.BotCommands;
@@ -45,6 +46,7 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
     private final ItemService itemService;
     private final CartItemService cartItemService;
     private final TemplateBuilder templateBuilder;
+    private final CartService cartService;
 
     @Override
     public List<PartialBotApiMethod<?>> handleChooseLanguage(BotUser botUser, CallbackQuery callbackQuery) {
@@ -90,6 +92,9 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
         if (Objects.equals(data, BotCommands.MAIN_MENU.name())) {
             return buttonMainMenu(botUser, callbackQuery);
         }
+        if (Objects.equals(data, BotCommands.MY_ACTIVE_CART.name())) {
+            return myActiveCart(botUser, callbackQuery);
+        }
         String[] split = data.split("#");
         Long categoryId = Long.valueOf(split[1]);
         if (Objects.equals(split[0], BotCommands.BACK.name())) {
@@ -104,6 +109,7 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
         EditMessageText editMessage = baseService.editMessageText(botUser.getChatId(), editText, messageId, replyKeyboard);
         return List.of(editMessage);
     }
+
 
     @Override
     public List<PartialBotApiMethod<?>> handleChooseItem(
@@ -121,9 +127,10 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
             return handleMinus(botUser, callbackQuery, split);
         }
 
-        if (Objects.equals(BotCommands.CART.name(), command)) {
-            return handleCart(botUser, callbackQuery, split);
+        if (Objects.equals(BotCommands.ADD_CART.name(), command)) {
+            return handleAddCart(botUser, callbackQuery, split);
         }
+
         if (Objects.equals(BotCommands.BACK.name(), command)) {
             return handleBack(botUser, callbackQuery, split);
         }
@@ -131,8 +138,45 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
         return List.of();
     }
 
+    @Override
+    public List<PartialBotApiMethod<?>> handleMyCart(BotUser botUser, CallbackQuery callback) {
+        String data = callback.getData();
+        String[] split = data.split("#");
+        String command = split[0];
+        if (Objects.equals(command, BotCommands.CLEAR_CART.name())) {
+            return clearCart(botUser, split[1], callback.getMessage().getMessageId());
+        }
+        if (Objects.equals(command, BotCommands.BACK.name())) {
+            return handleBack(botUser, callback, split);
+        }
+
+        if (Objects.equals(command, BotCommands.PLUS.name())) {
+            return handlePlusActiveCart(botUser, callback, split);
+        }
+
+        if (Objects.equals(command, BotCommands.MINUS.name())) {
+            return handleMinusActiveCart(botUser, callback, split);
+        }
+        return List.of();
+    }
+
+
+    private List<PartialBotApiMethod<?>> clearCart(BotUser botUser, String cartId, Integer messageId) {
+        cartItemService.clearCartItem(Long.valueOf(cartId));
+        cartService.clearCart(Long.valueOf(cartId));
+        String message = BotMessages.CHOOSE_CATEGORY_ITEM.getMessage(botUser.getLanguage());
+        InlineKeyboardMarkup markup = replyMarkupService.itemCategory(botUser, null, false);
+        DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
+        SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), message, markup);
+        botUserService.changeState(botUser, State.CHOOSE_ITEM_CATEGORY.name());
+        return List.of(deleteMessage, sendMessage);
+    }
+
     private List<PartialBotApiMethod<?>> handleBack(BotUser botUser, CallbackQuery callback, String[] split) {
-        Long categoryId = Long.valueOf(split[1]);
+        Long categoryId = null;
+        if (split.length > 1) {
+            categoryId = Long.valueOf(split[1]);
+        }
         Integer messageId = callback.getMessage().getMessageId();
         String editText = BotMessages.CHOOSE_CATEGORY_ITEM.getMessage(botUser.getLanguage());
         DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
@@ -142,7 +186,7 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
         return List.of(deleteMessage, sendMessage);
     }
 
-    private List<PartialBotApiMethod<?>> handleCart(BotUser botUser, CallbackQuery callback, String[] split) {
+    private List<PartialBotApiMethod<?>> handleAddCart(BotUser botUser, CallbackQuery callback, String[] split) {
         Long categoryId = Long.valueOf(split[1]);
         int quantity = Integer.parseInt(split[2]);
         Long itemId = Long.valueOf(split[3]);
@@ -153,6 +197,65 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
         SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), message, markup);
         botUserService.changeState(botUser, State.CHOOSE_ITEM_CATEGORY.name());
         return List.of(deleteMessage, sendMessage);
+    }
+
+    private List<PartialBotApiMethod<?>> handlePlusActiveCart(
+            BotUser botUser,
+            CallbackQuery callback,
+            String[] split
+    ) {
+
+        Long cartItemId = Long.valueOf(split[1]);
+        CartDTO cartDTO = cartItemService.incrementCartItem(cartItemId);
+
+        return renderCart(botUser, callback, cartDTO);
+    }
+
+
+    private List<PartialBotApiMethod<?>> handleMinusActiveCart(
+            BotUser botUser,
+            CallbackQuery callback,
+            String[] split) {
+        Long cartItemId = Long.valueOf(split[1]);
+        CartDTO cartDTO = cartItemService.decrementCartItem(cartItemId);
+        return renderCart(botUser, callback, cartDTO);
+    }
+
+    private List<PartialBotApiMethod<?>> myActiveCart(
+            BotUser botUser,
+            CallbackQuery callback
+    ) {
+
+        CartDTO cartDTO = cartService.getCartByUser(botUser);
+        return renderCart(botUser, callback, cartDTO);
+    }
+
+
+    private List<PartialBotApiMethod<?>> renderCart(
+            BotUser botUser,
+            CallbackQuery callback,
+            CartDTO cartDTO
+    ) {
+
+        String header = BotMessages.MY_CART.getMessage(botUser.getLanguage());
+        String body = templateBuilder.cartTemplate(botUser.getLanguage(), cartDTO);
+        String message = header + body;
+
+        InlineKeyboardMarkup markup =
+                replyMarkupService.cartMenu(botUser, cartDTO);
+
+        Integer messageId = callback.getMessage().getMessageId();
+
+        EditMessageText editMessage = baseService.editMessageText(
+                botUser.getChatId(),
+                message,
+                messageId,
+                markup
+        );
+
+        botUserService.changeState(botUser, State.MY_CART.name());
+
+        return List.of(editMessage);
     }
 
     private List<PartialBotApiMethod<?>> handlePlus(

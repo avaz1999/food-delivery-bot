@@ -1,7 +1,6 @@
 package food.delivery.bot.service.base.impl;
 
 import food.delivery.backend.entity.BotUser;
-import food.delivery.backend.model.dto.ItemDTO;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.utils.BotMessages;
@@ -71,6 +70,7 @@ public class BaseServiceImpl implements BaseService {
                 .chatId(chatId.toString())
                 .messageId(messageId)
                 .text(text)
+                .parseMode("HTML")
                 .replyMarkup(replyKeyboard)
                 .build();
     }

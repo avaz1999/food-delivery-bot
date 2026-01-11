@@ -73,7 +73,9 @@ public enum BotMessages {
 
     SERVICE_TEXT("<b>Service xizmati: {0}</b>", "<b>Сервис: {0}</b>"),
 
-    TOTAL_TEXT("<b>Jami: {0} so'm</b>", "<b>Итого: {0} сумов</b>");
+    TOTAL_TEXT("<b>Jami: {0} so'm</b>", "<b>Итого: {0} сумов</b>"),
+
+    MY_CART("<b>Mening savatimda:</b>\n\n", "<b>В моей корзине:</b>\n\n");
 
     public String getMessage(Language language) {
         if (language.equals(Language.UZ)) return uz;

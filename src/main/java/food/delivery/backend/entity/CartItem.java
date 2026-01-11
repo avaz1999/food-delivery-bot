@@ -1,5 +1,6 @@
 package food.delivery.backend.entity;
 
+import food.delivery.backend.enums.CartStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,4 +41,7 @@ public class CartItem implements Serializable {
 
     @Column(nullable = false)
     private BigDecimal totalPrice;
+
+    @Enumerated(EnumType.STRING)
+    private CartStatus status;
 }

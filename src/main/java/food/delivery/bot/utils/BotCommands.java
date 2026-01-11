@@ -41,9 +41,15 @@ public enum BotCommands {
 
     MINUS("➖", "➖"),
 
-    CART("\uD83D\uDED2 Savatga qo'shish", "\uD83D\uDED2 Добавить в корзину"),
+    ADD_CART("\uD83D\uDED2 Savatga qo'shish", "\uD83D\uDED2 Добавить в корзину"),
 
-    IGNORE("IGNORE", "IGNORE");
+    IGNORE("IGNORE", "IGNORE"),
+
+    MY_ACTIVE_CART("\uD83D\uDED2 Savatcha","\uD83D\uDED2 Корзина"),
+
+    ADD_ORDER("\uD83D\uDE96 BUYURTMA BERISH", "\uD83D\uDE96 СДЕЛАТЬ ЗАКАЗ"),
+
+    CLEAR_CART("🗑 SAVATCHANI BO'SHATISH", "\uD83D\uDDD1 Опустошение корзины");
     private final String uz;
     private final String ru;
 

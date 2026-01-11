@@ -30,6 +30,7 @@ public class ClientCallbackQueryServiceImpl implements ClientCallbackQueryServic
             case STATE_SETTING_CHOOSE_LANG -> stateService.handleSettingChangeLang(botUser, callbackQuery);
             case CHOOSE_ITEM_CATEGORY -> stateService.handleChooseOrderType(botUser, callbackQuery);
             case CHOOSE_ITEM -> stateService.handleChooseItem(botUser, callbackQuery);
+            case MY_CART -> stateService.handleMyCart(botUser, callbackQuery);
             default -> throw new IllegalStateException("Unexpected value: " + currentState);
         };
     }

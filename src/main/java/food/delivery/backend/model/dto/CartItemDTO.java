@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class CartItemDTO implements Serializable {
+    private Long id;
     private String itemName;
     private BigDecimal price;
     private Integer quantity;

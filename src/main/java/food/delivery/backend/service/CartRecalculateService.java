@@ -47,9 +47,11 @@ public class CartRecalculateService {
 
         // 3. DELIVERY TARIFF
         BigDecimal delivery = calculateDelivery(distanceKm, cart.getUnifiedTariff());
+        cart.setDeliveryPrice(delivery);
 
         // 4. SERVICE TARIFF
         BigDecimal service = calculateService(cart.getUnifiedTariff());
+        cart.setServicePrice(service);
 
         // 5. FINAL
         BigDecimal finalTotal =

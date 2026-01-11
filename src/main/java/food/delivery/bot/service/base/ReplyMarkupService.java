@@ -1,6 +1,7 @@
 package food.delivery.bot.service.base;
 
 import food.delivery.backend.entity.BotUser;
+import food.delivery.backend.model.dto.CartDTO;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
@@ -32,4 +33,6 @@ public interface ReplyMarkupService {
     InlineKeyboardMarkup itemCategory(BotUser botUser, Long categoryId, boolean isOne);
 
     InlineKeyboardMarkup oneItemReply(BotUser botUser, Long categoryId, int count, Long itemId);
+
+    InlineKeyboardMarkup cartMenu(BotUser botUser, CartDTO cartByUser);
 }

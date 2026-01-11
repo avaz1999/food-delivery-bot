@@ -22,4 +22,6 @@ public interface StateCallbackQueryService {
     List<PartialBotApiMethod<?>> handleChooseOrderType(BotUser botUser, CallbackQuery callbackQuery);
 
     List<PartialBotApiMethod<?>> handleChooseItem(BotUser botUser, CallbackQuery callbackQuery);
+
+    List<PartialBotApiMethod<?>> handleMyCart(BotUser botUser, CallbackQuery callbackQuery);
 }
