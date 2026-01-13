@@ -421,6 +421,57 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
         return new InlineKeyboardMarkup(rows);
     }
 
+    @Override
+    public ReplyKeyboard sharePhoneForOrder(BotUser botUser) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                List.of(
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.SHARE_PHONE.getMessage(botUser.getLanguage()))
+                                        .requestContact(true)
+                                        .build()
+                        )),
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.BACK.getMessage(botUser.getLanguage()))
+                                        .build()
+                        ))
+                )
+        );
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    @Override
+    public ReplyKeyboard paymentType(BotUser botUser) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                List.of(
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.CASH.getMessage(botUser.getLanguage()))
+                                        .requestContact(true)
+                                        .build()
+                        )),
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.PAYMENT_TYPE.getMessage(botUser.getLanguage()))
+                                        .build()
+                        )),
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.BACK.getMessage(botUser.getLanguage()))
+                                        .build()
+                        ))
+                )
+        );
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
     private InlineKeyboardRow buildCartTopRow(BotUser botUser, CartDTO cart) {
 
         InlineKeyboardRow row = new InlineKeyboardRow();

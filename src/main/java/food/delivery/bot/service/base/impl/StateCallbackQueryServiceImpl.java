@@ -157,9 +157,18 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
         if (Objects.equals(command, BotCommands.MINUS.name())) {
             return handleMinusActiveCart(botUser, callback, split);
         }
-        return List.of();
+        return order(botUser, callback);
     }
 
+    private List<PartialBotApiMethod<?>> order(BotUser botUser, CallbackQuery callback) {
+        Integer messageId = callback.getMessage().getMessageId();
+        String message = BotMessages.ORDER_MESSAGE.getMessage(botUser.getLanguage());
+        ReplyKeyboard replyKeyboard = replyMarkupService.sharePhoneForOrder(botUser);
+        DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
+        SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), message, replyKeyboard);
+        botUserService.changeState(botUser, State.ORDER.name());
+        return List.of(deleteMessage, sendMessage);
+    }
 
     private List<PartialBotApiMethod<?>> clearCart(BotUser botUser, String cartId, Integer messageId) {
         cartItemService.clearCartItem(Long.valueOf(cartId));
@@ -218,6 +227,15 @@ public class StateCallbackQueryServiceImpl implements StateCallbackQueryService 
             String[] split) {
         Long cartItemId = Long.valueOf(split[1]);
         CartDTO cartDTO = cartItemService.decrementCartItem(cartItemId);
+        if (cartDTO.getItems().isEmpty()) {
+            Integer messageId = callback.getMessage().getMessageId();
+            DeleteMessage deleteMessage = baseService.deleteMessage(botUser.getChatId(), messageId);
+            String message = BotMessages.CHOOSE_CATEGORY_ITEM.getMessage(botUser.getLanguage());
+            InlineKeyboardMarkup markup = replyMarkupService.itemCategory(botUser, null, false);
+            SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), message, markup);
+            botUserService.changeState(botUser, State.CHOOSE_ITEM_CATEGORY.name());
+            return List.of(deleteMessage, sendMessage);
+        }
         return renderCart(botUser, callback, cartDTO);
     }
 

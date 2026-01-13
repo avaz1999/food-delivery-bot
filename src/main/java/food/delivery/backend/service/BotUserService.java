@@ -36,9 +36,9 @@ public class BotUserService {
         return repository.save(botUser).getLanguage();
     }
 
-    public BotUser savePhoneNumber(BotUser botUser, String phoneNumber) {
+    public BotUser savePhoneNumber(BotUser botUser, String phoneNumber, String state) {
         botUser.setPhone(phoneNumber);
-        botUser.setState(State.STATE_SETTING_MENU.name());
+        botUser.setState(state);
         return repository.save(botUser);
     }
 

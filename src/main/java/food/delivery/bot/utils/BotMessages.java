@@ -75,7 +75,16 @@ public enum BotMessages {
 
     TOTAL_TEXT("<b>Jami: {0} so'm</b>", "<b>Итого: {0} сумов</b>"),
 
-    MY_CART("<b>Mening savatimda:</b>\n\n", "<b>В моей корзине:</b>\n\n");
+    MY_CART("<b>Mening savatimda:</b>\n\n", "<b>В моей корзине:</b>\n\n"),
+
+    ORDER_MESSAGE("<b>Telefon raqamingizni +998 ** *** ** **\nko'rinishida yuboring yoki kiriting</b>",
+            "<b>Отправьте или введите свой номер телефона как +998 ** *** ** **\n</b>"),
+
+    FAIL_CONTACT("<b>O'zizga tegishli bo'lmagan contact yubordingiz</b>",
+            "<b>Вы отправили контакт, который вам не принадлежит</b>"),
+
+    CHOOSE_PAYMENT_TYPE("<b>To'lov turini tanlang</b>",
+            "<b>Выберите способ оплаты</b>");
 
     public String getMessage(Language language) {
         if (language.equals(Language.UZ)) return uz;

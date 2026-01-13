@@ -22,4 +22,8 @@ public interface StateMessageService {
     List<PartialBotApiMethod<?>> handleChooseLocation(BotUser botUser, Message message);
 
     List<PartialBotApiMethod<?>> handleChooseName(BotUser botUser, Message message);
+
+    List<PartialBotApiMethod<?>> handleOrder(BotUser botUser, Message message);
+
+    List<PartialBotApiMethod<?>> handleChoosePaymentType(BotUser botUser, Message message);
 }

@@ -49,7 +49,11 @@ public enum BotCommands {
 
     ADD_ORDER("\uD83D\uDE96 BUYURTMA BERISH", "\uD83D\uDE96 СДЕЛАТЬ ЗАКАЗ"),
 
-    CLEAR_CART("🗑 SAVATCHANI BO'SHATISH", "\uD83D\uDDD1 Опустошение корзины");
+    CLEAR_CART("🗑 SAVATCHANI BO'SHATISH", "\uD83D\uDDD1 Опустошение корзины"),
+
+    CASH("\uD83D\uDCB8 Naqt pul", "\uD83D\uDCB8 Наличные"),
+
+    PAYMENT_TYPE("\uD83D\uDCB3 Click", "\uD83D\uDCB3 Click");
     private final String uz;
     private final String ru;
 

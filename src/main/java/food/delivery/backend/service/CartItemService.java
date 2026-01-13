@@ -46,8 +46,11 @@ public class CartItemService {
                         CartStatus.ACTIVE
                 )
                 .orElse(null);
+
+        boolean isNew = false;
         if (cartItem == null) {
             cartItem = buildCartItem(cart, itemDTO, quantity);
+            isNew = true;
         } else {
             int newQuantity = cartItem.getQuantity() + quantity;
             cartItem.setQuantity(newQuantity);
@@ -64,7 +67,12 @@ public class CartItemService {
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             cart.setItems(new ArrayList<>());
         }
-        cart.getItems().add(cartItem);
+        if (isNew) {
+            if (cart.getItems() == null) {
+                cart.setItems(new ArrayList<>());
+            }
+            cart.getItems().add(cartItem);
+        }
 
         // 6. RECALCULATE - all keys
         CartDTO cartDTO = recalculateService.recalculateCart(cart, botUser);
@@ -118,6 +126,7 @@ public class CartItemService {
             cartItem.setStatus(CartStatus.CANCELLED);
             cartItem.setQuantity(1);
             cartItem.setTotalPrice(BigDecimal.ZERO);
+            cartItem.getCart().setStatus(CartStatus.CANCELLED);
         } else {
             cartItem.setQuantity(newQuantity);
             cartItem.setTotalPrice(

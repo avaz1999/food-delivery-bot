@@ -35,4 +35,8 @@ public interface ReplyMarkupService {
     InlineKeyboardMarkup oneItemReply(BotUser botUser, Long categoryId, int count, Long itemId);
 
     InlineKeyboardMarkup cartMenu(BotUser botUser, CartDTO cartByUser);
+
+    ReplyKeyboard sharePhoneForOrder(BotUser botUser);
+
+    ReplyKeyboard paymentType(BotUser botUser);
 }

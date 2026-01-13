@@ -3,11 +3,14 @@ package food.delivery.bot.service.base.impl;
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.enums.State;
+import food.delivery.backend.model.dto.CartDTO;
 import food.delivery.backend.service.BotUserService;
+import food.delivery.backend.service.CartService;
 import food.delivery.backend.service.LocationService;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.service.base.StateMessageService;
+import food.delivery.bot.service.base.TemplateBuilder;
 import food.delivery.bot.utils.BotCommands;
 import food.delivery.bot.utils.BotMessages;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,8 @@ public class StateMessageServiceImpl implements StateMessageService {
     private final BotUserService botUserService;
     private final ReplyMarkupService replyMarkupService;
     private final LocationService locationService;
+    private final CartService cartService;
+    private final TemplateBuilder templateBuilder;
 
     @Override
     public List<PartialBotApiMethod<?>> handleStartMessage(BotUser botUser, String text) {
@@ -149,6 +154,103 @@ public class StateMessageServiceImpl implements StateMessageService {
         return List.of(sendMessage);
     }
 
+    @Override
+    public List<PartialBotApiMethod<?>> handleOrder(BotUser botUser, Message message) {
+        if (isBackCommand(botUser, message)) {
+            return handleBack(botUser, message);
+        }
+
+        if (message.hasContact()) {
+            return handleContact(botUser, message);
+        }
+
+        return deleteIncomingMessage(botUser, message);
+    }
+
+    @Override
+    public List<PartialBotApiMethod<?>> handleChoosePaymentType(BotUser botUser, Message message) {
+        return List.of();
+    }
+
+    private List<PartialBotApiMethod<?>> handleBack(BotUser botUser, Message message) {
+
+        DeleteMessage deleteMessage =
+                baseService.deleteMessage(botUser.getChatId(), message.getMessageId());
+
+        CartDTO cart = cartService.getCartByUser(botUser);
+
+        SendMessage cartMessage = baseService.sendMessage(
+                botUser.getChatId(),
+                buildCartText(botUser, cart),
+                replyMarkupService.cartMenu(botUser, cart)
+        );
+
+        botUserService.changeState(botUser, State.MY_CART.name());
+
+        return List.of(deleteMessage, cartMessage);
+    }
+
+    private List<PartialBotApiMethod<?>> handleContact(BotUser botUser, Message message) {
+
+        Contact contact = message.getContact();
+
+        if (!isOwnerContact(botUser, contact)) {
+            return sendWrongContactMessage(botUser);
+        }
+
+        botUserService.savePhoneNumber(
+                botUser,
+                contact.getPhoneNumber(),
+                State.CHOOSE_PAYMENT_TYPE.name()
+        );
+
+        return sendChoosePaymentType(botUser);
+    }
+
+    private boolean isBackCommand(BotUser botUser, Message message) {
+        return Objects.equals(
+                BotCommands.BACK.getMessage(botUser.getLanguage()),
+                message.getText()
+        );
+    }
+
+    private boolean isOwnerContact(BotUser botUser, Contact contact) {
+        return Objects.equals(contact.getUserId(), botUser.getUserId());
+    }
+
+    private String buildCartText(BotUser botUser, CartDTO cart) {
+        return BotMessages.CART_MESSAGE.getMessage(botUser.getLanguage())
+                + templateBuilder.cartTemplate(botUser.getLanguage(), cart);
+    }
+
+    private List<PartialBotApiMethod<?>> sendWrongContactMessage(BotUser botUser) {
+
+        SendMessage sendMessage = baseService.sendMessage(
+                botUser.getChatId(),
+                BotMessages.FAIL_CONTACT.getMessage(botUser.getLanguage()),
+                replyMarkupService.sharePhoneForOrder(botUser)
+        );
+
+        return List.of(sendMessage);
+    }
+
+    private List<PartialBotApiMethod<?>> sendChoosePaymentType(BotUser botUser) {
+
+        SendMessage sendMessage = baseService.sendMessage(
+                botUser.getChatId(),
+                BotMessages.CHOOSE_PAYMENT_TYPE.getMessage(botUser.getLanguage()),
+                replyMarkupService.paymentType(botUser)
+        );
+
+        return List.of(sendMessage);
+    }
+
+    private List<PartialBotApiMethod<?>> deleteIncomingMessage(BotUser botUser, Message message) {
+        return List.of(
+                baseService.deleteMessage(botUser.getChatId(), message.getMessageId())
+        );
+    }
+
     private List<PartialBotApiMethod<?>> handleMainMenuCommand(BotUser botUser) {
         List<PartialBotApiMethod<?>> mainMenu = baseService.mainMenuMessage(botUser);
 
@@ -227,7 +329,7 @@ public class StateMessageServiceImpl implements StateMessageService {
 
     @NotNull
     private List<PartialBotApiMethod<?>> phoneNumberSendMessage(BotUser botUser, Integer messageId, String phoneNumber) {
-        BotUser savedUser = botUserService.savePhoneNumber(botUser, phoneNumber);
+        BotUser savedUser = botUserService.savePhoneNumber(botUser, phoneNumber, State.STATE_SETTING_MENU.name());
         Long chatId = botUser.getChatId();
         Language language = botUser.getLanguage();
         List<PartialBotApiMethod<?>> response = new ArrayList<>();

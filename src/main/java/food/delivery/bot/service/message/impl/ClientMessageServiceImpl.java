@@ -45,6 +45,8 @@ public class ClientMessageServiceImpl implements ClientMessageService {
             case STATE_CHOOSE_ORDER_TYPE -> stateMessageService.handleOrderType(botUser, message);
             case STATE_CHOOSE_LOCATION -> stateMessageService.handleChooseLocation(botUser, message);
             case STATE_ENTER_NAME -> stateMessageService.handleChooseName(botUser, message);
+            case ORDER -> stateMessageService.handleOrder(botUser, message);
+            case CHOOSE_PAYMENT_TYPE -> stateMessageService.handleChoosePaymentType(botUser, message);
             default -> List.of(baseService.deleteMessage(botUser.getChatId(), message.getMessageId()));
         };
     }

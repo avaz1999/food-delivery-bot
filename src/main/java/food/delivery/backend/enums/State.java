@@ -18,7 +18,9 @@ public enum State {
     CHOOSE_ITEM_CATEGORY,
     STATE_ADD_ORDER,
     CHOOSE_ITEM,
-    MY_CART, STATE_CHOOSE_ORDER_TYPE
+    MY_CART,
+    STATE_CHOOSE_ORDER_TYPE,
+    CHOOSE_PAYMENT_TYPE, ORDER
 
 
 //    start -> choose_lang -> choose_city -> enter_phone -> main_menu
