@@ -156,19 +156,41 @@ public class StateMessageServiceImpl implements StateMessageService {
 
     @Override
     public List<PartialBotApiMethod<?>> handleOrder(BotUser botUser, Message message) {
-        if (isBackCommand(botUser, message)) {
-            return handleBack(botUser, message);
+        if (!message.hasText()) {
+            return deleteIncomingMessage(botUser, message);
         }
 
         if (message.hasContact()) {
             return handleContact(botUser, message);
         }
 
-        return deleteIncomingMessage(botUser, message);
-    }
+        if (isBackCommand(botUser, message)) {
+            return handleBack(botUser, message);
+        }
 
+        String text = message.getText();
+        String phone = extractAndValidatePhone(text);
+        if (phone == null) return deleteIncomingMessage(botUser, message);
+        botUserService.savePhoneNumber(botUser, phone, State.CHOOSE_PAYMENT_TYPE.name());
+        String sendText = BotMessages.CHOOSE_PAYMENT_TYPE.getMessage(botUser.getLanguage());
+        ReplyKeyboard replyKeyboard = replyMarkupService.paymentType(botUser);
+        SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), sendText, replyKeyboard);
+
+        return List.of(sendMessage);
+    }
     @Override
     public List<PartialBotApiMethod<?>> handleChoosePaymentType(BotUser botUser, Message message) {
+        if (!message.hasText()) {
+            return deleteIncomingMessage(botUser, message);
+        }
+        String command = message.getText();
+        if (Objects.equals(BotCommands.BACK.getMessage(botUser.getLanguage()), command)) {
+            String text = BotMessages.BOT_SHARE_PHONE_NUMBER.getMessage(botUser.getLanguage());
+            ReplyKeyboard replyKeyboard = replyMarkupService.sharePhoneForOrder(botUser);
+            SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), text, replyKeyboard);
+            botUserService.changeState(botUser, State.ORDER.name());
+            return List.of(sendMessage);
+        }
         return List.of();
     }
 

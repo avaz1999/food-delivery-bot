@@ -2,15 +2,10 @@ package food.delivery.backend.entity;
 
 import food.delivery.backend.enums.CartStatus;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +48,9 @@ public class Cart implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unified_tariff_id")
     private UnifiedTariff unifiedTariff;
+
+    @OneToOne(mappedBy = "cart")
+    private Order order;
 
     @Column(name = "delivery_price")
     private BigDecimal deliveryPrice;

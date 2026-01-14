@@ -55,12 +55,17 @@ public class CartService {
         return repository.existsByCreatedByAndStatus(botUser.getId(), CartStatus.ACTIVE);
     }
 
+    public Cart getActiveCartByUser(Long userId) {
+        return repository.findByCreatedByAndStatus(userId, CartStatus.ACTIVE)
+                .orElse(null);
+    }
+
     public CartDTO getCartByUser(BotUser botUser) {
         return repository.findByCreatedByAndStatus(botUser.getId(), CartStatus.ACTIVE)
                 .map(this::buildCartDTO).orElse(null);
     }
 
-    private CartDTO buildCartDTO(Cart cart) {
+    public CartDTO buildCartDTO(Cart cart) {
         BigDecimal itemsSum = cart.getItems()
                 .stream()
                 .map(CartItem::getTotalPrice)
@@ -81,9 +86,4 @@ public class CartService {
         repository.updateStatus(cartId, CartStatus.CANCELLED);
     }
 
-    public CartDTO increaseCartTotalPrice(Cart cart, BigDecimal totalPrice) {
-        cart.setTotalPrice(cart.getTotalPrice().add(totalPrice));
-        repository.save(cart);
-        return buildCartDTO(cart);
-    }
 }
