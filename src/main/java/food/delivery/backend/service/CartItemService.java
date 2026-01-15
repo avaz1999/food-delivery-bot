@@ -140,4 +140,7 @@ public class CartItemService {
         return cartService.saveCart(cartItem.getCart());
     }
 
+    public void save(List<CartItem> list) {
+        repository.saveAll(list);
+    }
 }

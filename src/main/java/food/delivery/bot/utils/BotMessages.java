@@ -84,7 +84,33 @@ public enum BotMessages {
             "<b>Вы отправили контакт, который вам не принадлежит</b>"),
 
     CHOOSE_PAYMENT_TYPE("<b>To'lov turini tanlang</b>",
-            "<b>Выберите способ оплаты</b>");
+            "<b>Выберите способ оплаты</b>"),
+
+    ORDER_TEMPLATE1("📦 *Buyurtma ma'lumotlari*\n\n", "📦 *Информация для заказа*\n\n"),
+
+    ORDER_TEMPLATE3("\uD83D\uDCCC Holati: *", "\uD83D\uDCCC Статус: *"),
+
+    ORDER_TEMPLATE4("📍 Manzil:\n", "📍 Адрес:\n"),
+
+    ORDER_TEMPLATE5("🛒 *Mahsulotlar:*\n", "🛒 *Товары:*"),
+
+    ORDER_TEMPLATE6("\n💳 To'lov turi: *", "\n💳 Тип оплаты: *"),
+
+    ORDER_TEMPLATE7("💰 *Hisob-kitob:*\n", "💰 *Аккаунт:*\n"),
+
+    ORDER_TEMPLATE8("Mahsulotlar: *", "Товары: *"),
+
+    ORDER_TEMPLATE9(" so'm*\n", " сум*\n"),
+
+    ORDER_TEMPLATE10("Yetkazib berish: *", "Доставка: *"),
+
+    ORDER_TEMPLATE11("Xizmat haqi: *", "Плата за обслуживание: *"),
+
+    ORDER_TEMPLATE12("\n💵 *Jami:* *", "\n💵 *Итого:* *"),
+
+    ORDER_TEMPLATE13("🙏 Buyurtmangiz uchun rahmat!", "🙏 Buyurtmangiz uchun rahmat!"),
+
+    ORDER_TEMPLATE2("🆔 Buyurtma raqami: *", "🆔 Номер заказа: *");
 
     public String getMessage(Language language) {
         if (language.equals(Language.UZ)) return uz;

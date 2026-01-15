@@ -1,10 +1,9 @@
 package food.delivery.backend.service;
 
-import food.delivery.backend.entity.BotUser;
-import food.delivery.backend.entity.Cart;
-import food.delivery.backend.entity.Order;
-import food.delivery.backend.entity.OrderHistory;
+import food.delivery.backend.entity.*;
+import food.delivery.backend.enums.CartStatus;
 import food.delivery.backend.enums.Language;
+import food.delivery.backend.enums.OrderStatus;
 import food.delivery.backend.enums.PaymentType;
 import food.delivery.backend.model.dto.CartDTO;
 import food.delivery.backend.model.dto.OrderDTO;
@@ -17,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Avaz Absamatov
@@ -30,6 +31,7 @@ public class OrderService {
     private final CartService cartService;
     private final OrderRepository orderRepository;
     private final OrderHistoryRepository orderHistoryRepository;
+    private final CartItemService cartItemService;
 
     @Transactional
     public OrderDTO createOrder(BotUser botUser, PaymentType paymentType) {
@@ -42,6 +44,16 @@ public class OrderService {
         orderHistoryRepository.save(orderHistory);
 
         CartDTO cartDTO = cartService.buildCartDTO(cart);
+        cart.setStatus(CartStatus.ORDERED);
+        List<CartItem> list = new ArrayList<>();
+
+        for (CartItem item : cart.getItems()) {
+            item.setStatus(CartStatus.ORDERED);
+            list.add(item);
+        }
+
+        cartService.saveCart(cart);
+        cartItemService.save(list);
         return buildOrderDTO(order, cartDTO, botUser.getLanguage());
     }
 
@@ -52,6 +64,7 @@ public class OrderService {
                 .phoneNumber(botUser.getPhone())
                 .address(botUser.getAddress())
                 .paymentType(paymentType)
+                .status(OrderStatus.NEW)
                 .totalPrice(cart.getTotalPrice())
                 .build();
     }
@@ -59,6 +72,7 @@ public class OrderService {
     private OrderHistory buildOrderHistory(Order order) {
         OrderHistory orderHistory = OrderHistory.builder()
                 .order(order)
+                .status(OrderStatus.NEW)
                 .build();
         orderHistory.setCreatedBy(order.getCreatedBy());
         orderHistory.setCreatedAt(LocalDateTime.now());

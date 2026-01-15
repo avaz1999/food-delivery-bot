@@ -3,6 +3,7 @@ package food.delivery.bot.service.base.impl;
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.model.dto.CartDTO;
 import food.delivery.backend.model.dto.CartItemDTO;
+import food.delivery.backend.model.dto.OrderDTO;
 import food.delivery.bot.service.base.TemplateBuilder;
 import food.delivery.bot.utils.BotMessages;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,63 @@ public class TemplateBuilderImpl implements TemplateBuilder {
                         language,
                         cartDTO.getTotalPrice() != null ? cartDTO.getTotalPrice() : "0"));
         return template.toString();
+    }
+
+    @Override
+    public String orderTemplate(Language language, OrderDTO order) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(BotMessages.ORDER_TEMPLATE1.getMessage(language));
+
+        sb.append(BotMessages.ORDER_TEMPLATE2.getMessage(language))
+                .append(order.getOrderId())
+                .append("*\n");
+
+        sb.append(BotMessages.ORDER_TEMPLATE3.getMessage(language))
+                .append(order.getStatus())
+                .append("*\n\n");
+
+        sb.append(BotMessages.ORDER_TEMPLATE4.getMessage(language))
+                .append(order.getAddress())
+                .append("\n\n");
+
+        sb.append(BotMessages.ORDER_TEMPLATE5.getMessage(language));
+
+        for (CartItemDTO item : order.getItems()) {
+            sb.append(item.getQuantity())
+                    .append("️⃣ ✖️ ")
+                    .append(item.getItemName())
+                    .append("\n");
+        }
+
+        sb.append(BotMessages.ORDER_TEMPLATE6.getMessage(language))
+                .append(order.getPaymentType())
+                .append("*\n\n");
+
+        sb.append("──────────────\n");
+        sb.append(BotMessages.ORDER_TEMPLATE7.getMessage(language));
+
+        sb.append(BotMessages.ORDER_TEMPLATE8.getMessage(language))
+                .append(order.getItemPrice())
+                .append(BotMessages.ORDER_TEMPLATE9.getMessage(language));
+
+        sb.append(BotMessages.ORDER_TEMPLATE10.getMessage(language))
+                .append(order.getDeliveryPrice())
+                .append(BotMessages.ORDER_TEMPLATE9.getMessage(language));
+
+        if (order.getServicePrice() != null) {
+            sb.append(BotMessages.ORDER_TEMPLATE11.getMessage(language))
+                    .append(order.getServicePrice())
+                    .append(BotMessages.ORDER_TEMPLATE9.getMessage(language));
+        }
+
+        sb.append(BotMessages.ORDER_TEMPLATE12.getMessage(language))
+                .append(order.getTotalPrice())
+                .append(BotMessages.ORDER_TEMPLATE9.getMessage(language));
+
+        sb.append("──────────────\n\n");
+        sb.append(BotMessages.ORDER_TEMPLATE13.getMessage(language));
+
+        return sb.toString();
     }
 
     private static String toEmoji(Integer num) {

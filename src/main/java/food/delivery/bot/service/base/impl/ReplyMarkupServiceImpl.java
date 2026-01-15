@@ -451,7 +451,6 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
                         new KeyboardRow(List.of(
                                 KeyboardButton.builder()
                                         .text(BotCommands.CASH.getMessage(botUser.getLanguage()))
-                                        .requestContact(true)
                                         .build()
                         )),
                         new KeyboardRow(List.of(
@@ -462,6 +461,23 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
                         new KeyboardRow(List.of(
                                 KeyboardButton.builder()
                                         .text(BotCommands.BACK.getMessage(botUser.getLanguage()))
+                                        .build()
+                        ))
+                )
+        );
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    @Override
+    public ReplyKeyboard mainMenuCommand(BotUser botUser) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                List.of(
+                        new KeyboardRow(List.of(
+                                KeyboardButton.builder()
+                                        .text(BotCommands.MAIN_MENU.getMessage(botUser.getLanguage()))
                                         .build()
                         ))
                 )

@@ -2,11 +2,14 @@ package food.delivery.bot.service.base.impl;
 
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
+import food.delivery.backend.enums.PaymentType;
 import food.delivery.backend.enums.State;
 import food.delivery.backend.model.dto.CartDTO;
+import food.delivery.backend.model.dto.OrderDTO;
 import food.delivery.backend.service.BotUserService;
 import food.delivery.backend.service.CartService;
 import food.delivery.backend.service.LocationService;
+import food.delivery.backend.service.OrderService;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.service.base.StateMessageService;
@@ -41,6 +44,7 @@ public class StateMessageServiceImpl implements StateMessageService {
     private final LocationService locationService;
     private final CartService cartService;
     private final TemplateBuilder templateBuilder;
+    private final OrderService orderService;
 
     @Override
     public List<PartialBotApiMethod<?>> handleStartMessage(BotUser botUser, String text) {
@@ -156,12 +160,12 @@ public class StateMessageServiceImpl implements StateMessageService {
 
     @Override
     public List<PartialBotApiMethod<?>> handleOrder(BotUser botUser, Message message) {
-        if (!message.hasText()) {
-            return deleteIncomingMessage(botUser, message);
-        }
 
         if (message.hasContact()) {
             return handleContact(botUser, message);
+        }
+        if (!message.hasText()) {
+            return deleteIncomingMessage(botUser, message);
         }
 
         if (isBackCommand(botUser, message)) {
@@ -178,6 +182,7 @@ public class StateMessageServiceImpl implements StateMessageService {
 
         return List.of(sendMessage);
     }
+
     @Override
     public List<PartialBotApiMethod<?>> handleChoosePaymentType(BotUser botUser, Message message) {
         if (!message.hasText()) {
@@ -189,6 +194,14 @@ public class StateMessageServiceImpl implements StateMessageService {
             ReplyKeyboard replyKeyboard = replyMarkupService.sharePhoneForOrder(botUser);
             SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), text, replyKeyboard);
             botUserService.changeState(botUser, State.ORDER.name());
+            return List.of(sendMessage);
+        }
+        if (Objects.equals(BotCommands.CASH.getMessage(botUser.getLanguage()), command)) {
+            OrderDTO order = orderService.createOrder(botUser, PaymentType.CASH);
+            String template = templateBuilder.orderTemplate(botUser.getLanguage(), order);
+            ReplyKeyboard markup = replyMarkupService.mainMenuCommand(botUser);
+            SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), template, markup);
+            botUserService.changeState(botUser, State.STATE_MAIN_MENU.name());
             return List.of(sendMessage);
         }
         return List.of();
@@ -380,6 +393,7 @@ public class StateMessageServiceImpl implements StateMessageService {
         Double longitude = location.getLongitude();
         String address = locationService.getAddressByLongitudeAndLatitude(latitude, longitude);
         botUser.setTemAddress(address);
+        botUser.setAddress(address);
         botUser = botUserService.saveTempAddress(botUser);
 
         //Save user location

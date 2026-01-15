@@ -39,4 +39,6 @@ public interface ReplyMarkupService {
     ReplyKeyboard sharePhoneForOrder(BotUser botUser);
 
     ReplyKeyboard paymentType(BotUser botUser);
+
+    ReplyKeyboard mainMenuCommand(BotUser botUser);
 }
