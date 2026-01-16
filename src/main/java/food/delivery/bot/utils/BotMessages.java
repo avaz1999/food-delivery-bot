@@ -92,7 +92,7 @@ public enum BotMessages {
 
     ORDER_TEMPLATE4("📍 Manzil:\n", "📍 Адрес:\n"),
 
-    ORDER_TEMPLATE5("🛒 *Mahsulotlar:*\n", "🛒 *Товары:*"),
+    ORDER_TEMPLATE5("🛒 *Mahsulotlar:*\n", "🛒 *Товары:*\n"),
 
     ORDER_TEMPLATE6("\n💳 To'lov turi: *", "\n💳 Тип оплаты: *"),
 
@@ -110,7 +110,35 @@ public enum BotMessages {
 
     ORDER_TEMPLATE13("🙏 Buyurtmangiz uchun rahmat!", "🙏 Buyurtmangiz uchun rahmat!"),
 
-    ORDER_TEMPLATE2("🆔 Buyurtma raqami: *", "🆔 Номер заказа: *");
+    ORDER_TEMPLATE2("🆔 Buyurtma raqami: *", "🆔 Номер заказа: *"),
+
+    MY_ORDERS_TEMPLATE1(
+            "📦 *Mening buyurtmalarim*\n\n",
+            "📦 *Мои заказы*\n\n"
+    ),
+
+    MY_ORDERS_TEMPLATE2(
+            "🆔 Buyurtma: *",
+            "🆔 Заказ: *"
+    ),
+
+    MY_ORDERS_TEMPLATE3(
+            "📌 Holati: *",
+            "📌 Статус: *"
+    ),
+
+    MY_ORDERS_TEMPLATE4(
+            "🛒 *Mahsulotlar:*\n",
+            "🛒 *Товары:*\n"
+    ),
+
+    MY_ORDERS_TEMPLATE_EMPTY(
+            "❌ Sizda hozircha buyurtmalar mavjud emas",
+            "❌ У вас пока нет заказов"
+    );
+    ;
+
+
 
     public String getMessage(Language language) {
         if (language.equals(Language.UZ)) return uz;

@@ -3,6 +3,7 @@ package food.delivery.bot.service.base.impl;
 import food.delivery.backend.enums.Language;
 import food.delivery.backend.model.dto.CartDTO;
 import food.delivery.backend.model.dto.CartItemDTO;
+import food.delivery.backend.model.dto.MyOrderDTO;
 import food.delivery.backend.model.dto.OrderDTO;
 import food.delivery.bot.service.base.TemplateBuilder;
 import food.delivery.bot.utils.BotMessages;
@@ -107,6 +108,46 @@ public class TemplateBuilderImpl implements TemplateBuilder {
 
         sb.append("──────────────\n\n");
         sb.append(BotMessages.ORDER_TEMPLATE13.getMessage(language));
+
+        return sb.toString();
+    }
+
+    @Override
+    public String buildMyOrders(List<MyOrderDTO> orders, Language language) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(BotMessages.MY_ORDERS_TEMPLATE1.getMessage(language));
+
+        if (orders == null || orders.isEmpty()) {
+            sb.append(BotMessages.MY_ORDERS_TEMPLATE_EMPTY.getMessage(language));
+            return sb.toString();
+        }
+
+        for (MyOrderDTO order : orders) {
+
+            sb.append("━━━━━━━━━━━━━━\n");
+
+            sb.append(BotMessages.MY_ORDERS_TEMPLATE2.getMessage(language))
+                    .append(order.getOrderId())
+                    .append("*\n");
+
+            sb.append(BotMessages.MY_ORDERS_TEMPLATE3.getMessage(language))
+                    .append(order.getStatus())
+                    .append("*\n\n");
+
+            sb.append(BotMessages.MY_ORDERS_TEMPLATE4.getMessage(language));
+
+            int index = 1;
+            for (CartItemDTO item : order.getItems()) {
+                sb.append(index++)
+                        .append("️⃣ ")
+                        .append(item.getItemName())
+                        .append("\n");
+            }
+
+            sb.append("\n");
+        }
+
+        sb.append("━━━━━━━━━━━━━━");
 
         return sb.toString();
     }

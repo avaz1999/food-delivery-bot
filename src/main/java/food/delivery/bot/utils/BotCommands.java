@@ -53,7 +53,9 @@ public enum BotCommands {
 
     CASH("\uD83D\uDCB8 Naqt pul", "\uD83D\uDCB8 Наличные"),
 
-    PAYMENT_TYPE("\uD83D\uDCB3 Click", "\uD83D\uDCB3 Click");
+    PAYMENT_TYPE("\uD83D\uDCB3 Click", "\uD83D\uDCB3 Click"),
+
+    CLOSE("❌ YOPISH", "❌ ЗАКРЫТИЕ");
     private final String uz;
     private final String ru;
 

@@ -5,6 +5,7 @@ import food.delivery.backend.enums.Language;
 import food.delivery.backend.model.dto.CartDTO;
 import food.delivery.backend.model.dto.CartItemDTO;
 import food.delivery.backend.model.dto.CategoryDTO;
+import food.delivery.backend.model.dto.MyOrderDTO;
 import food.delivery.backend.service.CartService;
 import food.delivery.backend.service.CategoryService;
 import food.delivery.bot.service.base.ReplyMarkupService;
@@ -486,6 +487,44 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
         replyKeyboardMarkup.setSelective(true);
         replyKeyboardMarkup.setOneTimeKeyboard(true);
         return replyKeyboardMarkup;
+    }
+
+    @Override
+    public InlineKeyboardMarkup myOrders(BotUser botUser, List<MyOrderDTO> orders) {
+        return null;
+        /*InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
+
+        for (int i = 0; i < orders.size(); i++) {
+            MyOrderDTO eApplication = orders.get(i);
+
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(String.valueOf(i + 1));
+            button.setCallbackData("app#" + eApplication.getId());
+
+            if (i < 5) row1.add(button);
+            else row2.add(button);
+        }
+
+        rows.add(row1);
+        rows.add(row2);
+        row3.add(InlineKeyboardButton.builder()
+                .text(BotCommands.CLOSE.getMessage(botUser.getLanguage()))
+                .callbackData(BotCommands.CLOSE.getMessage(botUser.getLanguage()))
+                .build());
+        rows.add(row3);
+
+        int size = orders.size();
+
+        if (orders.size() > 5) {
+            List<InlineKeyboardButton> paginationRow = getInlineKeyboardButtonsForNextPrev(user, page, size);
+            rows.add(paginationRow);
+        }
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;*/
     }
 
     private InlineKeyboardRow buildCartTopRow(BotUser botUser, CartDTO cart) {

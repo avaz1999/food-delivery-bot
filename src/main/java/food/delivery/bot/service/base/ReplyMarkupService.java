@@ -2,8 +2,11 @@ package food.delivery.bot.service.base;
 
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.model.dto.CartDTO;
+import food.delivery.backend.model.dto.MyOrderDTO;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+
+import java.util.List;
 
 /**
  * Created by Avaz Absamatov
@@ -41,4 +44,6 @@ public interface ReplyMarkupService {
     ReplyKeyboard paymentType(BotUser botUser);
 
     ReplyKeyboard mainMenuCommand(BotUser botUser);
+
+    InlineKeyboardMarkup myOrders(BotUser botUser, List<MyOrderDTO> myOrders);
 }

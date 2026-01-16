@@ -2,16 +2,20 @@ package food.delivery.bot.service.base.impl;
 
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.State;
+import food.delivery.backend.model.dto.MyOrderDTO;
 import food.delivery.backend.service.BotUserService;
+import food.delivery.backend.service.OrderService;
 import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.MenuService;
 import food.delivery.bot.service.base.ReplyMarkupService;
+import food.delivery.bot.service.base.TemplateBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.List;
@@ -28,6 +32,8 @@ public class MenuServiceImpl implements MenuService {
     private final BaseService baseService;
     private final ReplyMarkupService replyMarkupService;
     private final BotUserService botUserService;
+    private final OrderService orderService;
+    private final TemplateBuilder templateBuilder;
 
     @Override
     public List<PartialBotApiMethod<?>> addOrder(BotUser botUser, CallbackQuery callbackQuery) {
@@ -45,7 +51,10 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<PartialBotApiMethod<?>> myOrders(BotUser botUserDTO, CallbackQuery callbackQuery) {
+    public List<PartialBotApiMethod<?>> myOrders(BotUser botUser, CallbackQuery callbackQuery) {
+        List<MyOrderDTO> myOrders = orderService.getMyOrders(botUser);
+        String template = templateBuilder.buildMyOrders(myOrders, botUser.getLanguage());
+        InlineKeyboardMarkup markup = replyMarkupService.myOrders(botUser, myOrders);
         return List.of();
     }
 

@@ -6,7 +6,9 @@ import food.delivery.backend.enums.Language;
 import food.delivery.backend.enums.OrderStatus;
 import food.delivery.backend.enums.PaymentType;
 import food.delivery.backend.model.dto.CartDTO;
+import food.delivery.backend.model.dto.MyOrderDTO;
 import food.delivery.backend.model.dto.OrderDTO;
+import food.delivery.backend.model.mapper.CartItemMapper;
 import food.delivery.backend.repository.OrderHistoryRepository;
 import food.delivery.backend.repository.OrderRepository;
 import jakarta.transaction.Transactional;
@@ -32,15 +34,18 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderHistoryRepository orderHistoryRepository;
     private final CartItemService cartItemService;
+    private final CartItemMapper cartItemMapper;
 
     @Transactional
     public OrderDTO createOrder(BotUser botUser, PaymentType paymentType) {
         Cart cart = cartService.getActiveCartByUser(botUser.getId());
 
         Order order = this.buildOrder(cart, botUser, paymentType);
+        order.setCreatedBy(botUser.getId());
         orderRepository.save(order);
 
         OrderHistory orderHistory = this.buildOrderHistory(order);
+        orderHistory.setCreatedBy(botUser.getId());
         orderHistoryRepository.save(orderHistory);
 
         CartDTO cartDTO = cartService.buildCartDTO(cart);
@@ -104,5 +109,21 @@ public class OrderService {
         } while (orderRepository.existsByOrderId(orderId));
 
         return orderId;
+    }
+
+    public List<MyOrderDTO> getMyOrders(BotUser botUser) {
+        return orderRepository.findAllByCreatedBy(botUser.getId()).stream()
+                .map(order -> this.buildMyOrderDTO(order, botUser.getLanguage()))
+                .toList();
+    }
+
+    private MyOrderDTO buildMyOrderDTO(Order order, Language language) {
+        return MyOrderDTO.builder()
+                .id(order.getId())
+                .orderId(order.getOrderId())
+                .status(order.getStatus().getLabel(language.name()))
+                .items(cartItemMapper.toDTOList(order.getCart().getItems()))
+                .build();
+
     }
 }
