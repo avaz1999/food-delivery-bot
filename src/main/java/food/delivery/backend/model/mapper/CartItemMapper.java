@@ -29,6 +29,17 @@ public class CartItemMapper {
                 .toList();
     }
 
+    public List<CartItemDTO> myOrderToDTO(List<CartItem> list) {
+        if (list == null || list.isEmpty())
+            return new ArrayList<>();
+
+        return list.stream()
+                .filter(item -> Objects.equals(item.getStatus(), CartStatus.ORDERED))
+                .sorted(Comparator.comparing(CartItem::getItemName))
+                .map(this::toDTO)
+                .toList();
+    }
+
     public CartItemDTO toDTO(CartItem e) {
 
         if (e == null) return null;

@@ -20,6 +20,8 @@ public class OrderDTO {
     private String orderId;
     private String status;
     private String address;
+    private String phone;
+    private String fullName;
 
     private List<CartItemDTO> items = new ArrayList<>();
 

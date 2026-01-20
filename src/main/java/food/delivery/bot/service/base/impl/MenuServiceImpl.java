@@ -3,6 +3,7 @@ package food.delivery.bot.service.base.impl;
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.State;
 import food.delivery.backend.model.dto.MyOrderDTO;
+import food.delivery.backend.model.dto.PageableDTO;
 import food.delivery.backend.service.BotUserService;
 import food.delivery.backend.service.OrderService;
 import food.delivery.bot.service.base.BaseService;
@@ -52,10 +53,11 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<PartialBotApiMethod<?>> myOrders(BotUser botUser, CallbackQuery callbackQuery) {
-        List<MyOrderDTO> myOrders = orderService.getMyOrders(botUser);
-        String template = templateBuilder.buildMyOrders(myOrders, botUser.getLanguage());
-        InlineKeyboardMarkup markup = replyMarkupService.myOrders(botUser, myOrders);
-        return List.of();
+        PageableDTO<MyOrderDTO> myOrders = orderService.getMyOrders(botUser, 0, 5);
+        String template = templateBuilder.buildMyOrders(myOrders.getItems(), botUser.getLanguage());
+        InlineKeyboardMarkup markup = replyMarkupService.myOrders(botUser, myOrders, 0);
+        SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), template, markup);
+        return List.of(sendMessage);
     }
 
     @Override

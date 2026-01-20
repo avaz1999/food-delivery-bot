@@ -8,12 +8,16 @@ import food.delivery.backend.enums.PaymentType;
 import food.delivery.backend.model.dto.CartDTO;
 import food.delivery.backend.model.dto.MyOrderDTO;
 import food.delivery.backend.model.dto.OrderDTO;
+import food.delivery.backend.model.dto.PageableDTO;
 import food.delivery.backend.model.mapper.CartItemMapper;
 import food.delivery.backend.repository.OrderHistoryRepository;
 import food.delivery.backend.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -62,6 +66,13 @@ public class OrderService {
         return buildOrderDTO(order, cartDTO, botUser.getLanguage());
     }
 
+    public OrderDTO getOrderById(int id, BotUser botUser) {
+        Order order = orderRepository.findById((long) id).orElse(null);
+        assert order != null;
+        CartDTO cartDTO = cartService.buildCartDTO(order.getCart());
+        return buildOrderDTO(order, cartDTO, botUser.getLanguage());
+    }
+
     private Order buildOrder(Cart cart, BotUser botUser, PaymentType paymentType) {
         return Order.builder()
                 .orderId(generateUniqueOrderId())
@@ -85,15 +96,17 @@ public class OrderService {
     }
 
 
-    private OrderDTO buildOrderDTO(Order order, CartDTO cartDTO, Language language) {
+    private OrderDTO buildOrderDTO(Order order, CartDTO cartDTO, BotUser botUser) {
         return OrderDTO.builder()
                 .id(order.getId())
                 .orderId(order.getOrderId())
-                .status(order.getStatus().getLabel(language.name()))
+                .status(order.getStatus().getLabel(botUser.getLanguage().name()))
                 .address(order.getAddress())
                 .items(cartDTO.getItems())
-                .paymentType(order.getPaymentType().getLabel(language.name()))
+                .paymentType(order.getPaymentType().getLabel(botUser.getLanguage().name()))
                 .itemPrice(cartDTO.getItemsPrice())
+                .phone(botUser.getPhone())
+                .fullName(botUser.getFullName())
                 .deliveryPrice(cartDTO.getDeliveryPrice())
                 .servicePrice(cartDTO.getServicePrice())
                 .totalPrice(order.getTotalPrice())
@@ -111,10 +124,14 @@ public class OrderService {
         return orderId;
     }
 
-    public List<MyOrderDTO> getMyOrders(BotUser botUser) {
-        return orderRepository.findAllByCreatedBy(botUser.getId()).stream()
+    public PageableDTO<MyOrderDTO> getMyOrders(BotUser botUser, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Order> result = orderRepository.findAllByCreatedBy(botUser.getId(), pageable);
+        List<MyOrderDTO> list = result.stream()
                 .map(order -> this.buildMyOrderDTO(order, botUser.getLanguage()))
                 .toList();
+        return new PageableDTO<>(list, result.getTotalElements());
     }
 
     private MyOrderDTO buildMyOrderDTO(Order order, Language language) {
@@ -122,8 +139,16 @@ public class OrderService {
                 .id(order.getId())
                 .orderId(order.getOrderId())
                 .status(order.getStatus().getLabel(language.name()))
-                .items(cartItemMapper.toDTOList(order.getCart().getItems()))
+                .items(cartItemMapper.myOrderToDTO(order.getCart().getItems()))
+                .totalPrice(order.getTotalPrice())
                 .build();
 
+    }
+
+    public OrderDTO getActiveOrderByUser(BotUser botUser) {
+        Order order = orderRepository.findByCreatedByAndStatus(botUser.getId(), OrderStatus.NEW);
+        assert order != null;
+        CartDTO cartDTO = cartService.buildCartDTO(order.getCart());
+        return buildOrderDTO(order, cartDTO, botUser);
     }
 }

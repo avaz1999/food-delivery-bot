@@ -66,9 +66,17 @@ public class TemplateBuilderImpl implements TemplateBuilder {
 
         sb.append(BotMessages.ORDER_TEMPLATE3.getMessage(language))
                 .append(order.getStatus())
-                .append("*\n\n");
+                .append("\n\n");
 
         sb.append(BotMessages.ORDER_TEMPLATE4.getMessage(language))
+                .append(order.getAddress())
+                .append("\n");
+
+        sb.append(BotMessages.ORDER_TEMPLATE4_1.getMessage(language))
+                .append(order.getAddress())
+                .append("\n");
+
+        sb.append(BotMessages.ORDER_TEMPLATE4_2.getMessage(language))
                 .append(order.getAddress())
                 .append("\n\n");
 
@@ -132,21 +140,21 @@ public class TemplateBuilderImpl implements TemplateBuilder {
 
             sb.append(BotMessages.MY_ORDERS_TEMPLATE3.getMessage(language))
                     .append(order.getStatus())
-                    .append("*\n\n");
+                    .append("*\n");
 
             sb.append(BotMessages.MY_ORDERS_TEMPLATE4.getMessage(language));
 
-            int index = 1;
             for (CartItemDTO item : order.getItems()) {
-                sb.append(index++)
+                sb.append(item.getQuantity())
                         .append("️⃣ ")
                         .append(item.getItemName())
                         .append("\n");
             }
+            sb.append(BotMessages.MY_ORDERS_TEMPLATE_TOTAL_PRICE.getMessage(language))
+                    .append(order.getTotalPrice())
+                    .append("\n");
 
-            sb.append("\n");
         }
-
         sb.append("━━━━━━━━━━━━━━");
 
         return sb.toString();

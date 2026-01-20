@@ -2,10 +2,7 @@ package food.delivery.bot.service.base.impl;
 
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.enums.Language;
-import food.delivery.backend.model.dto.CartDTO;
-import food.delivery.backend.model.dto.CartItemDTO;
-import food.delivery.backend.model.dto.CategoryDTO;
-import food.delivery.backend.model.dto.MyOrderDTO;
+import food.delivery.backend.model.dto.*;
 import food.delivery.backend.service.CartService;
 import food.delivery.backend.service.CategoryService;
 import food.delivery.bot.service.base.ReplyMarkupService;
@@ -34,6 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReplyMarkupServiceImpl implements ReplyMarkupService {
+    private final String label = "order#";
     private final CategoryService categoryService;
     private final CartService cartService;
 
@@ -412,6 +410,108 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
     }
 
     @Override
+    public InlineKeyboardMarkup myOrders(BotUser botUser, PageableDTO<MyOrderDTO> result, int page) {
+        List<MyOrderDTO> orders = result.getItems();
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+        InlineKeyboardRow numberRow = new InlineKeyboardRow();
+        InlineKeyboardRow closeRow = new InlineKeyboardRow();
+        for (int i = 0; i < orders.size(); i++) {
+            MyOrderDTO order = orders.get(i);
+            InlineKeyboardButton numberButton = InlineKeyboardButton.builder()
+                    .text(String.valueOf(i + 1))
+                    .callbackData(label + label + order.getId())
+                    .build();
+            numberRow.add(numberButton);
+        }
+        closeRow.add(InlineKeyboardButton.builder()
+                .text(BotCommands.CLOSE.getMessage(botUser.getLanguage()))
+                .callbackData(label + BotCommands.CLOSE.name())
+                .build());
+
+        rows.add(numberRow);
+        if (result.getTotal() > 5) {
+            List<InlineKeyboardRow> pagination = nextPrevButtons(botUser, page, result.getTotal());
+            rows.addAll(pagination);
+        }
+        rows.add(closeRow);
+
+        return new InlineKeyboardMarkup(rows);
+    }
+
+    @Override
+    public InlineKeyboardMarkup close(BotUser botUser) {
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+        InlineKeyboardRow closeRow = new InlineKeyboardRow();
+
+        closeRow.add(InlineKeyboardButton.builder()
+                .text(BotCommands.CLOSE.getMessage(botUser.getLanguage()))
+                .callbackData(label + BotCommands.CLOSE.name())
+                .build());
+
+        rows.add(closeRow);
+
+        return new InlineKeyboardMarkup(rows);
+    }
+
+    @Override
+    public InlineKeyboardMarkup kitchenManagerOrderTemplate(BotUser botUser) {
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+        InlineKeyboardRow row = new InlineKeyboardRow();
+
+        row.add(InlineKeyboardButton.builder()
+                .text(BotCommands.CANCEL.getMessage(botUser.getLanguage()))
+                .callbackData(label + BotCommands.CANCEL.name())
+                .build());
+
+        row.add(InlineKeyboardButton.builder()
+                .text(BotCommands.ACCEPT.getMessage(botUser.getLanguage()))
+                .callbackData(label + BotCommands.ACCEPT.name())
+                .build());
+
+        rows.add(row);
+
+        return new InlineKeyboardMarkup(rows);
+    }
+
+    private List<InlineKeyboardRow> nextPrevButtons(
+            BotUser botUser,
+            int page,
+            long total
+    ) {
+
+        int pageSize = 5;
+        int totalPages = (int) Math.ceil((double) total / pageSize);
+
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+        InlineKeyboardRow pagination = new InlineKeyboardRow();
+
+        if (page > 0) {
+            pagination.add(
+                    InlineKeyboardButton.builder()
+                            .text(BotCommands.PREV.getMessage(botUser.getLanguage()))
+                            .callbackData(label + BotCommands.PREV.name() + "#" + (page - 1))
+                            .build()
+            );
+        }
+
+        if (page < totalPages - 1) {
+            pagination.add(
+                    InlineKeyboardButton.builder()
+                            .text(BotCommands.NEXT.getMessage(botUser.getLanguage()))
+                            .callbackData(label + BotCommands.NEXT.name() + "#" + (page + 1))
+                            .build()
+            );
+        }
+
+        if (!pagination.isEmpty()) {
+            rows.add(pagination);
+        }
+
+        return rows;
+    }
+
+
+    @Override
     public InlineKeyboardMarkup cartMenu(BotUser botUser, CartDTO cart) {
         List<InlineKeyboardRow> rows = new ArrayList<>();
 
@@ -489,43 +589,6 @@ public class ReplyMarkupServiceImpl implements ReplyMarkupService {
         return replyKeyboardMarkup;
     }
 
-    @Override
-    public InlineKeyboardMarkup myOrders(BotUser botUser, List<MyOrderDTO> orders) {
-        return null;
-        /*InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
-        List<InlineKeyboardButton> row3 = new ArrayList<>();
-
-        for (int i = 0; i < orders.size(); i++) {
-            MyOrderDTO eApplication = orders.get(i);
-
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(String.valueOf(i + 1));
-            button.setCallbackData("app#" + eApplication.getId());
-
-            if (i < 5) row1.add(button);
-            else row2.add(button);
-        }
-
-        rows.add(row1);
-        rows.add(row2);
-        row3.add(InlineKeyboardButton.builder()
-                .text(BotCommands.CLOSE.getMessage(botUser.getLanguage()))
-                .callbackData(BotCommands.CLOSE.getMessage(botUser.getLanguage()))
-                .build());
-        rows.add(row3);
-
-        int size = orders.size();
-
-        if (orders.size() > 5) {
-            List<InlineKeyboardButton> paginationRow = getInlineKeyboardButtonsForNextPrev(user, page, size);
-            rows.add(paginationRow);
-        }
-        inlineKeyboardMarkup.setKeyboard(rows);
-        return inlineKeyboardMarkup;*/
-    }
 
     private InlineKeyboardRow buildCartTopRow(BotUser botUser, CartDTO cart) {
 

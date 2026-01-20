@@ -1,6 +1,8 @@
 package food.delivery.bot.service.message;
 
+import food.delivery.backend.entity.BotUser;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 import java.util.List;
@@ -11,4 +13,7 @@ import java.util.List;
  */
 public interface KitchenManagerMessageService {
     List<PartialBotApiMethod<?>> handleKitchenManagerState(Message message);
+
+    SendMessage orderMessage(BotUser botUser);
+
 }

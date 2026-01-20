@@ -3,6 +3,7 @@ package food.delivery.bot.service.base;
 import food.delivery.backend.entity.BotUser;
 import food.delivery.backend.model.dto.CartDTO;
 import food.delivery.backend.model.dto.MyOrderDTO;
+import food.delivery.backend.model.dto.PageableDTO;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
@@ -45,5 +46,9 @@ public interface ReplyMarkupService {
 
     ReplyKeyboard mainMenuCommand(BotUser botUser);
 
-    InlineKeyboardMarkup myOrders(BotUser botUser, List<MyOrderDTO> myOrders);
+    InlineKeyboardMarkup myOrders(BotUser botUser, PageableDTO<MyOrderDTO> result, int page);
+
+    InlineKeyboardMarkup close(BotUser botUser);
+
+    InlineKeyboardMarkup kitchenManagerOrderTemplate(BotUser botUser);
 }

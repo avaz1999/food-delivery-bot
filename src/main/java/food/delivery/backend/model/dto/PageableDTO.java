@@ -4,25 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Avaz Absamatov
- * Date: 1/15/2026
+ * Date: 1/16/2026
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class MyOrderDTO {
-    private Long id;
-    private String orderId;
-    private String status;
-    private BigDecimal totalPrice;
-    private List<CartItemDTO> items = new ArrayList<>();
+public class PageableDTO<T> implements Serializable {
+    private List<T> items = new ArrayList<>();
+    private long total;
 }

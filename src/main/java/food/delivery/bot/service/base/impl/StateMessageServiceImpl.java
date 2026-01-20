@@ -14,6 +14,7 @@ import food.delivery.bot.service.base.BaseService;
 import food.delivery.bot.service.base.ReplyMarkupService;
 import food.delivery.bot.service.base.StateMessageService;
 import food.delivery.bot.service.base.TemplateBuilder;
+import food.delivery.bot.service.message.KitchenManagerMessageService;
 import food.delivery.bot.utils.BotCommands;
 import food.delivery.bot.utils.BotMessages;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class StateMessageServiceImpl implements StateMessageService {
     private final CartService cartService;
     private final TemplateBuilder templateBuilder;
     private final OrderService orderService;
+    private final KitchenManagerMessageService kitchenManagerMessageService;
 
     @Override
     public List<PartialBotApiMethod<?>> handleStartMessage(BotUser botUser, String text) {
@@ -202,9 +204,15 @@ public class StateMessageServiceImpl implements StateMessageService {
             ReplyKeyboard markup = replyMarkupService.mainMenuCommand(botUser);
             SendMessage sendMessage = baseService.sendMessage(botUser.getChatId(), template, markup);
             botUserService.changeState(botUser, State.STATE_MAIN_MENU.name());
-            return List.of(sendMessage);
+            SendMessage kitchenSendMessage = kitchenManagerMessageService.orderMessage(botUser);
+            return List.of(sendMessage, kitchenSendMessage);
         }
         return List.of();
+    }
+
+    @Override
+    public List<PartialBotApiMethod<?>> handleMainMenu(BotUser botUser, Message message) {
+        return baseService.mainMenuMessage(botUser);
     }
 
     private List<PartialBotApiMethod<?>> handleBack(BotUser botUser, Message message) {

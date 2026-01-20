@@ -35,7 +35,7 @@ public enum BotCommands {
     ORDER_DELIVERY("\uD83D\uDE95 YETKAZIB BERISH",
             "\uD83D\uDE95 ДОСТАВКА"),
 
-    ORDER_PICKUP("\uD83D\uDEB6 OLIB KETISH","\uD83D\uDEB6 САМОВЫВОЗ"),
+    ORDER_PICKUP("\uD83D\uDEB6 OLIB KETISH", "\uD83D\uDEB6 САМОВЫВОЗ"),
 
     PLUS("➕", "➕"),
 
@@ -45,7 +45,7 @@ public enum BotCommands {
 
     IGNORE("IGNORE", "IGNORE"),
 
-    MY_ACTIVE_CART("\uD83D\uDED2 Savatcha","\uD83D\uDED2 Корзина"),
+    MY_ACTIVE_CART("\uD83D\uDED2 Savatcha", "\uD83D\uDED2 Корзина"),
 
     ADD_ORDER("\uD83D\uDE96 BUYURTMA BERISH", "\uD83D\uDE96 СДЕЛАТЬ ЗАКАЗ"),
 
@@ -55,7 +55,15 @@ public enum BotCommands {
 
     PAYMENT_TYPE("\uD83D\uDCB3 Click", "\uD83D\uDCB3 Click"),
 
-    CLOSE("❌ YOPISH", "❌ ЗАКРЫТИЕ");
+    CLOSE("❌ YOPISH", "❌ ЗАКРЫТИЕ"),
+
+    CANCEL("❌ Bekor qilish", "❌ Отмена"),
+
+    ACCEPT("✅ Qabul qilishi", "✅ Принятие"),
+
+    PREV("◀️", "◀️"),
+
+    NEXT("➡️", "➡️"),;
     private final String uz;
     private final String ru;
 

@@ -92,6 +92,10 @@ public enum BotMessages {
 
     ORDER_TEMPLATE4("📍 Manzil:\n", "📍 Адрес:\n"),
 
+    ORDER_TEMPLATE4_1("☎️ Telefon:\n", "☎️ Телефон:\n"),
+
+    ORDER_TEMPLATE4_2("\uD83D\uDE4E\uD83C\uDFFB\u200D♂️ Buyurtmachi:\n", "\uD83D\uDE4E\uD83C\uDFFB\u200D♂️ Клиент:\n"),
+
     ORDER_TEMPLATE5("🛒 *Mahsulotlar:*\n", "🛒 *Товары:*\n"),
 
     ORDER_TEMPLATE6("\n💳 To'lov turi: *", "\n💳 Тип оплаты: *"),
@@ -135,9 +139,9 @@ public enum BotMessages {
     MY_ORDERS_TEMPLATE_EMPTY(
             "❌ Sizda hozircha buyurtmalar mavjud emas",
             "❌ У вас пока нет заказов"
-    );
-    ;
-
+    ),
+    MY_ORDERS_TEMPLATE_TOTAL_PRICE("💵 Jami:",
+            "💵 Итого:");
 
 
     public String getMessage(Language language) {
